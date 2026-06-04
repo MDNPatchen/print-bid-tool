@@ -4,25 +4,32 @@ def round_cents(val): return round(val + 1e-9, 2)
 
 AUTH = {"bob patchen":["Madelia (HOP)"], "boat hen":["Madelia (HOP)"], "mike christman":["Madelia (HOP)"], "brenda ahern":["Madelia (HOP)"], "terry saar":["Madelia (HOP)"]}
 
-LOCS = {
-    "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0}
-}
-
 def load_inv():
     target = next((f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')), None)
     if not target: return pd.DataFrame(), "No inventory CSV found."
     try:
         with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
         h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
-        if h_idx == -1: return pd.DataFrame(), "Header not found."
         df = pd.DataFrame(data[h_idx+1:], columns=[str(h).strip() for h in data[h_idx]])
-        # Standardize column mapping
-        cmap = {'Price/mt':'Price', 'Net Price/mt':'Net_Price', 'Roll Width':'Width', 'Grammage (g/m²)':'Grammage'}
-        df = df.rename(columns=cmap)
+        
+        # Robust column finder
+        def find_col(k):
+            for c in df.columns:
+                if k.lower() in c.lower(): return c
+            return None
+            
+        p_col, n_col = find_col('Price/mt'), find_col('Net Price/mt')
+        w_col, g_col = find_col('Roll Width'), find_col('Grammage')
+        
         def ext(v):
             m = re.search(r'[\d\.]+', str(v))
             return float(m.group()) if m and not pd.isna(v) else None
-        df['P'] = df['Price'].apply(ext); df['Net'] = df['Net_Price'].apply(ext); df['W_mm'] = df['Width'].apply(ext); df['G'] = df['Grammage'].apply(ext)
+            
+        df['P'] = df[p_col].apply(ext)
+        df['Net'] = df[n_col].apply(ext)
+        df['W_mm'] = df[w_col].apply(ext)
+        df['G'] = df[g_col].apply(ext)
+        
         df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
         df = df.dropna(subset=['Price_Final','W_mm','G'])
         df['Price/lb'] = (df['Price_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
