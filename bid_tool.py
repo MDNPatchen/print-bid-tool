@@ -133,13 +133,18 @@ st.title("📰 Newspaper Job Bid Worksheet")
 st.sidebar.header("System Access")
 entered_name = st.sidebar.text_input("Enter User Name:").strip().lower()
 
+# The brand new physical override button
+st.sidebar.button("Unlock Dashboard")
+
 if not entered_name:
-    st.info("Please enter your assigned name in the sidebar to unlock the tool.")
+    st.info("👋 Welcome! Please type your name in the sidebar and click the **Unlock Dashboard** button.")
     st.stop()
 
 if entered_name not in AUTHORIZED_USERS:
-    st.error("Name not recognized by the system. Check your spelling.")
+    st.error("❌ Name not recognized by the system. Check your spelling.")
     st.stop()
+
+st.sidebar.success(f"🔓 Access Granted")
 
 # ----- SIDEBAR INPUTS -----
 st.sidebar.header("Job Specs & Location")
@@ -206,3 +211,104 @@ if not inventory_loaded_successfully:
     
     web_width = st.sidebar.number_input("Web Width (inches)", value=22.0)
     basis_weight = st.sidebar.number_input("Basis Weight (lbs)", value=27.7)
+    raw_manual_price = rates["newsprint_cost_per_lb"]
+    dynamic_paper_cost = round_cents(raw_manual_price * markup_multiplier)
+    
+    st.sidebar.info(f"Manual Rate: ${dynamic_paper_cost:.2f}/lb")
+
+press_cutoff = st.sidebar.number_input("Press Cut-Off", value=21.25)
+
+st.sidebar.header("Pre-Press & Press Room")
+camera_plate_hours = st.sidebar.number_input("Camera/Plate hours", value=0.5)
+run_hours = st.sidebar.number_input("Time for run (hours)", value=1.0)
+num_leaders = st.sidebar.number_input("Number of press leaders", value=1)
+num_helpers = st.sidebar.number_input("Number of press helpers", value=2)
+make_ready_hours = st.sidebar.number_input("Make-ready/clean-up hours", value=0.5)
+
+st.sidebar.header("Mailroom")
+mailroom_leaders = st.sidebar.number_input("Mailroom Leaders", value=1)
+mailroom_leader_hours = st.sidebar.number_input("Mailroom Leader Hours", value=3.0)
+mailroom_helpers = st.sidebar.number_input("Mailroom Helpers", value=3)
+mailroom_helper_hours = st.sidebar.number_input("Mailroom Helper Hours", value=1.0)
+
+# The Fancier Boat Hen Easter Egg Trigger
+if entered_name == "boat hen":
+    fancy_logo = """
+    <div style='text-align: center; margin-top: 70px; opacity: 0.35;'>
+        <div style='font-family: "Georgia", serif; font-size: 34px; font-weight: normal; color: #2C3E50; letter-spacing: 5px;'>
+            B <span style='font-style: italic; color: #E74C3C;'>&</span> H
+        </div>
+        <div style='font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 9px; color: #7F8C8D; letter-spacing: 6px; text-transform: uppercase; margin-top: 6px; border-top: 1px solid #BDC3C7; padding-top: 6px; display: inline-block;'>
+            Print Works
+        </div>
+    </div>
+    """
+    st.sidebar.markdown(fancy_logo, unsafe_allow_html=True)
+
+# ----- INVISIBLE MATH ENGINE -----
+format_divisor = 2 if page_format == "Broadsheet" else (4 if page_format == "Tabloid" else 8)
+run_multiplier = 2 if run_type == "Straight" else 1
+
+black_plates = math.ceil(total_pages / format_divisor) * run_multiplier
+color_plates = math.ceil(color_pages / format_divisor) * 3 * run_multiplier
+total_plates = black_plates + color_plates
+
+# 1. Convert everything into standard Broadsheet equivalent pages for accurate PAPER WEIGHT
+equivalent_broadsheet_pages = total_pages / (format_divisor / 2)
+total_broadsheet_impressions = (press_run + waste_copies) * equivalent_broadsheet_pages
+
+pages_per_pound = 1900000 / (web_width * press_cutoff * basis_weight)
+total_pounds = total_broadsheet_impressions / pages_per_pound
+
+newsprint_cost = round_cents(total_pounds * dynamic_paper_cost)
+
+# 2. INK COST based on ACTUAL total impressions (base run + waste)
+total_actual_impressions = (press_run + waste_copies) * total_pages
+black_ink_cost = round_cents(total_actual_impressions * rates["black_ink_cost_per_impression"])
+
+leader_cost = round_cents(num_leaders * rates["press_leader_rate"] * run_hours)
+helper_cost = round_cents(num_helpers * rates["press_helper_rate"] * run_hours)
+make_ready_cost = round_cents(make_ready_hours * rates["make_ready_rate"])
+
+press_maint_cost = round_cents(newsprint_cost * rates["press_overhead_maint_pct"])
+
+plate_material_cost = round_cents(total_plates * rates["plate_cost"])
+plate_maint_cost = round_cents(total_plates * rates["plate_overhead_maint"])
+camera_plate_labor = round_cents(camera_plate_hours * rates["camera_plate_rate"])
+
+color_ink_cost = round_cents(color_plates * (press_run / 1000) * rates["color_ink_cost_per_plate_m"])
+
+mailroom_leader_cost = round_cents(mailroom_leaders * mailroom_leader_hours * rates["mailroom_leader_rate"])
+mailroom_helper_cost = round_cents(mailroom_helpers * mailroom_helper_hours * rates["mailroom_helper_rate"])
+total_mailroom_cost = round_cents(mailroom_leader_cost + mailroom_helper_cost)
+
+subtotal = round_cents(sum([
+    newsprint_cost, black_ink_cost, leader_cost, helper_cost, 
+    make_ready_cost, press_maint_cost, plate_material_cost, 
+    plate_maint_cost, camera_plate_labor, color_ink_cost, 
+    total_mailroom_cost
+]))
+
+overhead_cost = round_cents(subtotal * rates["overhead_pct"])
+total_cost = round_cents(subtotal + overhead_cost)
+profit = round_cents(total_cost * rates["profit_margin"])
+total_charge = round_cents(total_cost + profit)
+
+# ----- DASHBOARD DISPLAY -----
+st.header(f"Bid Summary: {customer_name} - {job_desc}")
+
+st.caption(f"Calculated Plates: {black_plates} Black | {color_plates} Color (Total: {total_plates}) based on {page_format} / {run_type}")
+
+col1, col2, col3 = st.columns(3)
+col1.metric("Total Paper Cost", f"${newsprint_cost:.2f}")
+col2.metric("Labor & Press", f"${(leader_cost + helper_cost + make_ready_cost + press_maint_cost + total_mailroom_cost):.2f}")
+col3.metric("Pre-Press & Ink", f"${(plate_material_cost + plate_maint_cost + camera_plate_labor + black_ink_cost + color_ink_cost):.2f}")
+
+st.divider()
+
+st.subheader("Bottom Line")
+b_col1, b_col2, b_col3, b_col4 = st.columns(4)
+b_col1.metric("Subtotal", f"${subtotal:.2f}")
+b_col2.metric("Overhead", f"${overhead_cost:.2f}")
+b_col3.metric("Total Cost", f"${total_cost:.2f}")
+b_col4.metric("Total Charge", f"${total_charge:.2f}")
