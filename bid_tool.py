@@ -2,7 +2,7 @@ import streamlit as st, pandas as pd, math, re, os, csv
 
 def round_cents(val): return round(val + 1e-9, 2)
 
-# Restored facility authentication and location-specific rates
+# AUTH dictionary fully restored to include Minot for all users
 AUTH = {
     "bob patchen":["Madelia (HOP)", "Minot"], 
     "boat hen":["Madelia (HOP)", "Minot"], 
@@ -17,27 +17,36 @@ LOCS = {
 }
 
 def load_inv():
-    target = next((f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')), None)
-    if not target: return pd.DataFrame(), "No inventory CSV found."
-    try:
-        with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
-        h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
-        df = pd.DataFrame(data[h_idx+1:], columns=[str(h).strip() for h in data[h_idx]])
+    # Load and merge ALL inventory files found in the folder
+    files = [f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')]
+    if not files: return pd.DataFrame(), "No inventory CSV found."
+    
+    dfs = []
+    for target in files:
+        try:
+            with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
+            h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
+            if h_idx == -1: continue
+            df = pd.DataFrame(data[h_idx+1:], columns=[str(h).strip() for h in data[h_idx]])
+            dfs.append(df)
+        except: continue
         
-        def find_col(k): return next((c for c in df.columns if k.lower() in c.lower()), None)
-        p, n, w, g = find_col('Price/mt'), find_col('Net Price/mt'), find_col('Roll Width'), find_col('Grammage')
-        
-        def ext(v):
-            m = re.search(r'[\d\.]+', str(v))
-            return float(m.group()) if m and not pd.isna(v) else None
-            
-        df['P'] = df[p].apply(ext); df['Net'] = df[n].apply(ext); df['W_mm'] = df[w].apply(ext); df['G'] = df[g].apply(ext)
-        df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
-        df = df.dropna(subset=['Price_Final','W_mm','G'])
-        df['Price/lb'] = (df['Price_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
-        df['Width'] = (df['W_mm']/25.4).round(1); df['Weight'] = (df['G']*0.61386).round(1)
-        return df.dropna(subset=['Width','Weight','Price/lb']), "Success"
-    except Exception as e: return pd.DataFrame(), str(e)
+    if not dfs: return pd.DataFrame(), "Could not parse inventory files."
+    df = pd.concat(dfs, ignore_index=True)
+    
+    cmap = {'Price/mt':'Price', 'Net Price/mt':'Net_Price', 'Roll Width':'Width', 'Grammage (g/m²)':'Grammage'}
+    df = df.rename(columns=cmap)
+    
+    def ext(v):
+        m = re.search(r'[\d\.]+', str(v))
+        return float(m.group()) if m and not pd.isna(v) else None
+    
+    df['P'] = df['Price'].apply(ext); df['Net'] = df['Net_Price'].apply(ext); df['W_mm'] = df['Width'].apply(ext); df['G'] = df['Grammage'].apply(ext)
+    df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
+    df = df.dropna(subset=['Price_Final','W_mm','G'])
+    df['Price/lb'] = (df['Price_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
+    df['Width'] = (df['W_mm']/25.4).round(1); df['Weight'] = (df['G']*0.61386).round(1)
+    return df.dropna(subset=['Width','Weight','Price/lb']), "Success"
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 user = st.sidebar.text_input("User Name:").strip().lower()
