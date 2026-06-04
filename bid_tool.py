@@ -12,7 +12,7 @@ LOCATIONS = {
     "Madelia (HOP)": {
         "profit_margin": 0.25,
         "overhead_pct": 0.26,
-        "newsprint_cost_per_lb": 0.35, # Fallback if inventory file is missing
+        "newsprint_cost_per_lb": 0.35, 
         "waste_pct": 0.10,
         "black_ink_cost_per_impression": 0.0006,
         "press_leader_rate": 30.00,
@@ -29,7 +29,7 @@ LOCATIONS = {
     "Minot": {
         "profit_margin": 0.25, 
         "overhead_pct": 0.26,
-        "newsprint_cost_per_lb": 0.35, # Fallback if inventory file is missing
+        "newsprint_cost_per_lb": 0.35, 
         "waste_pct": 0.10,
         "black_ink_cost_per_impression": 0.0006,
         "press_leader_rate": 31.34,
@@ -48,20 +48,44 @@ LOCATIONS = {
 # --- DYNAMIC INVENTORY LOADER ---
 @st.cache_data
 def load_inventory_data(location_name):
-    # Extracts "Minot" or "Madelia" from the dropdown string to match your file names
     base_name = location_name.split(" ")[0]
-    file_name = f"{base_name}.xlsx - Inventory.csv"
     
-    if not os.path.exists(file_name):
-        return pd.DataFrame() # Returns empty if file isn't in the folder yet
+    # Check multiple naming variations just to be safe
+    possible_names = [
+        f"{base_name}.xlsx - Inventory.csv",
+        f"{base_name}.csv",
+        f"{base_name}_Inventory.csv"
+    ]
+    
+    file_name = None
+    for name in possible_names:
+        if os.path.exists(name):
+            file_name = name
+            break
+            
+    if not file_name:
+        return pd.DataFrame() 
         
     try:
-        df = pd.read_csv(file_name, skiprows=7)
+        # Dynamically hunt down the actual header row to prevent IndexError
+        with open(file_name, 'r', encoding='utf-8', errors='ignore') as f:
+            lines = f.readlines()
+            
+        header_idx = 0
+        for i, line in enumerate(lines):
+            if 'Ownership' in line and 'Plant' in line:
+                header_idx = i
+                break
+                
+        df = pd.read_csv(file_name, skiprows=header_idx)
         
         def extract_num(val):
             if pd.isna(val): return None
             match = re.search(r'[\d\.]+', str(val))
             return float(match.group()) if match else None
+            
+        if 'Price/mt' not in df.columns:
+            return pd.DataFrame() # Bails out if the file is totally unreadable
             
         # Convert Price/mt to Price/lb and round up
         df['Price/lb'] = (df['Price/mt'] / 2204.62).apply(lambda x: round_cents(x) if pd.notna(x) else x)
@@ -100,30 +124,42 @@ total_pages = st.sidebar.number_input("Total Pages", value=16)
 color_pages = st.sidebar.number_input("Color Pages", value=4)
 
 st.sidebar.subheader("Web Specifications & Paper Stock")
-# Dynamic Inventory Integration
+
+# Dynamic Inventory Integration with Safety Nets
 inventory_df = load_inventory_data(selected_location)
+inventory_loaded_successfully = False
 
 if not inventory_df.empty:
     sizes = sorted(inventory_df['Paper Size (Inches)'].unique().tolist())
-    selected_size = st.sidebar.selectbox("Paper Size (Web Width in inches)", sizes)
     
-    # Cascade filter the weights based on the selected size
-    filtered_by_size = inventory_df[inventory_df['Paper Size (Inches)'] == selected_size]
-    weights = sorted(filtered_by_size['Paper Weight (#)'].unique().tolist())
-    selected_weight = st.sidebar.selectbox("Paper Weight (Basis lbs)", weights)
-    
-    # Calculate the exact average price for this roll combination
-    filtered_final = filtered_by_size[filtered_by_size['Paper Weight (#)'] == selected_weight]
-    calculated_avg_price = filtered_final['Price/lb'].mean()
-    
-    dynamic_paper_cost = round_cents(calculated_avg_price)
-    web_width = selected_size
-    basis_weight = selected_weight
-    
-    st.sidebar.success(f"Inventory Link Active: Average Cost is ${dynamic_paper_cost:.2f}/lb")
-else:
-    # If the CSV files are missing, fallback to manual entry
-    st.sidebar.warning("Inventory CSV not found. Using manual inputs.")
+    if len(sizes) > 0:
+        inventory_loaded_successfully = True
+        selected_size = st.sidebar.selectbox("Paper Size (Web Width in inches)", sizes)
+        
+        # Cascade filter the weights based on the selected size
+        filtered_by_size = inventory_df[inventory_df['Paper Size (Inches)'] == selected_size]
+        weights = sorted(filtered_by_size['Paper Weight (#)'].unique().tolist())
+        
+        if len(weights) > 0:
+            selected_weight = st.sidebar.selectbox("Paper Weight (Basis lbs)", weights)
+            
+            # Calculate the exact average price for this roll combination
+            filtered_final = filtered_by_size[filtered_by_size['Paper Weight (#)'] == selected_weight]
+            calculated_avg_price = filtered_final['Price/lb'].mean()
+            
+            dynamic_paper_cost = round_cents(calculated_avg_price)
+            web_width = selected_size
+            basis_weight = selected_weight
+            
+            st.sidebar.success(f"Inventory Link Active: Average Cost is ${dynamic_paper_cost:.2f}/lb")
+        else:
+            inventory_loaded_successfully = False
+    else:
+        inventory_loaded_successfully = False
+
+# The fallback happens seamlessly if the CSV is missing, empty, or unreadable
+if not inventory_loaded_successfully:
+    st.sidebar.warning("Inventory missing or unreadable. Using manual inputs.")
     web_width = st.sidebar.number_input("Web Width (inches)", value=22.0)
     basis_weight = st.sidebar.number_input("Basis Weight (lbs)", value=27.7)
     dynamic_paper_cost = rates["newsprint_cost_per_lb"]
