@@ -69,8 +69,8 @@ def load_inventory_data(location_name):
         return pd.DataFrame(), f"Could not find any CSV file containing '{base_name}' in the vault."
         
     try:
-        # 2. Dynamically hunt for the header row
-        with open(target_file, 'r', encoding='utf-8', errors='ignore') as f:
+        # 2. Dynamically hunt for the header row using latin1 encoding to catch weird bytes
+        with open(target_file, 'r', encoding='latin1', errors='ignore') as f:
             lines = f.readlines()
             
         header_idx = 0
@@ -79,7 +79,8 @@ def load_inventory_data(location_name):
                 header_idx = i
                 break
                 
-        df = pd.read_csv(target_file, skiprows=header_idx)
+        # Use latin1 here as well so pandas doesn't crash on the non-breaking spaces
+        df = pd.read_csv(target_file, skiprows=header_idx, encoding='latin1')
         
         # 3. Column name survivor mode (ignores exact spelling and special characters)
         col_map = {}
