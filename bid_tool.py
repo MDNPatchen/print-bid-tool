@@ -2,21 +2,19 @@ import streamlit as st, pandas as pd, math, re, os, csv
 
 def round_cents(val): return round(val + 1e-9, 2)
 
-AUTH = {"bob patchen":["Minot","Madelia (HOP)"], "boat hen":["Minot","Madelia (HOP)"], "mike christman":["Minot","Madelia (HOP)"], "brenda ahern":["Madelia (HOP)"], "terry saar":["Madelia (HOP)"]}
+AUTH = {"bob patchen":["Madelia (HOP)"], "boat hen":["Madelia (HOP)"], "mike christman":["Madelia (HOP)"], "brenda ahern":["Madelia (HOP)"], "terry saar":["Madelia (HOP)"]}
 
 LOCS = {
-    "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0},
-    "Minot": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":31.34,"press_helper_rate":22.43,"camera_plate_rate":30.0,"make_ready_rate":31.34,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":24.11,"mailroom_helper_rate":16.15}
+    "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0}
 }
 
-def load_inv(loc):
-    base = loc.split(" ")[0].lower()
-    target = next((f for f in os.listdir('.') if base in f.lower() and f.endswith('.csv')), None)
-    if not target: return pd.DataFrame(), f"No CSV for {base}"
+def load_inv():
+    # Looks for any CSV that looks like an inventory file
+    target = next((f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')), None)
+    if not target: return pd.DataFrame(), "No inventory CSV found."
     try:
         with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
         h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
-        if h_idx == -1: return pd.DataFrame(), "No header."
         df = pd.DataFrame(data[h_idx+1:], columns=[str(h).strip() for h in data[h_idx]])
         cmap = {'Price/mt':'Price', 'Net Price/mt':'Net_Price', 'Roll Width':'Width', 'Grammage (g/m²)':'Grammage'}
         df = df.rename(columns=cmap)
@@ -24,9 +22,7 @@ def load_inv(loc):
             m = re.search(r'[\d\.]+', str(v))
             return float(m.group()) if m and not pd.isna(v) else None
         df['P'] = df['Price'].apply(ext); df['Net'] = df['Net_Price'].apply(ext); df['W_mm'] = df['Width'].apply(ext); df['G'] = df['Grammage'].apply(ext)
-        # Prioritize Net Price, fallback to Price
-        df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None)
-        df['Price_Final'] = df['Price_Final'].fillna(df['P'])
+        df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
         df = df.dropna(subset=['Price_Final','W_mm','G'])
         df['Price/lb'] = (df['Price_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
         df['Width'] = (df['W_mm']/25.4).round(1); df['Weight'] = (df['G']*0.61386).round(1)
@@ -41,20 +37,18 @@ if not user or user not in AUTH: st.stop()
 loc = st.sidebar.selectbox("Facility", AUTH[user])
 rates = LOCS[loc]
 cust, desc = st.sidebar.text_input("Customer", "Mantako"), st.sidebar.text_input("Job", "Free Press")
-run = st.sidebar.number_input("Press Run", 5890, step=100)
-waste = st.sidebar.number_input("Waste Copies", 589, step=50)
+run, waste = st.sidebar.number_input("Press Run", 5890, step=100), st.sidebar.number_input("Waste Copies", 589, step=50)
 fmt, rtype = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"]), st.sidebar.selectbox("Run Type", ["Collect", "Straight"])
-t_pgs = st.sidebar.number_input("Total Pages", 20)
-c_pgs = st.sidebar.number_input("Color Pages", 4)
+t_pgs, c_pgs = st.sidebar.number_input("Total Pages", 20), st.sidebar.number_input("Color Pages", 4)
 
-inv, msg = load_inv(loc)
+inv, msg = load_inv()
 p_cost, w_in, b_wt = 0.0, 22.0, 27.7
 if not inv.empty:
     sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
     wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
     p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10)
     w_in, b_wt = sz, wt
-    st.sidebar.success(f"Billed at ${p_cost:.3f}/lb")
+    st.sidebar.success(f"Inventory Link Active: Billed at ${p_cost:.3f}/lb")
 else:
     w_in = st.sidebar.number_input("Web Width", 22.0)
     b_wt = st.sidebar.number_input("Basis Weight", 27.7)
