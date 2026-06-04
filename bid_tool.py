@@ -8,6 +8,14 @@ import os
 def round_cents(val):
     return math.ceil(val * 100) / 100
 
+# --- USER ACCESS DICTIONARY ---
+# Add your team members here. Keep the names lowercase for the matching logic.
+AUTHORIZED_USERS = {
+    "bob": ["Minot", "Madelia (HOP)"], # Master access
+    "sarah": ["Minot"],                # Minot only
+    "mike": ["Madelia (HOP)"]          # Madelia only
+}
+
 LOCATIONS = {
     "Madelia (HOP)": {
         "profit_margin": 0.25,
@@ -46,38 +54,34 @@ LOCATIONS = {
 }
 
 # --- DYNAMIC INVENTORY LOADER ---
-@st.cache_data
+# Removed the cache so the app actively searches the folder every single time
 def load_inventory_data(location_name):
-    base_name = location_name.split(" ")[0]
+    # Grab just the city name and make it lowercase (e.g., 'minot')
+    base_name = location_name.split(" ")[0].lower()
     
-    # Check multiple naming variations just to be safe
-    possible_names = [
-        f"{base_name}.xlsx - Inventory.csv",
-        f"{base_name}.csv",
-        f"{base_name}_Inventory.csv"
-    ]
+    # Fuzzy search: Look through every file in the folder for a match
+    all_files = os.listdir('.')
+    target_file = None
     
-    file_name = None
-    for name in possible_names:
-        if os.path.exists(name):
-            file_name = name
+    for f in all_files:
+        if base_name in f.lower() and f.lower().endswith('.csv'):
+            target_file = f
             break
             
-    if not file_name:
+    if not target_file:
         return pd.DataFrame() 
         
     try:
-        # Dynamically hunt down the actual header row to prevent IndexError
-        with open(file_name, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(target_file, 'r', encoding='utf-8', errors='ignore') as f:
             lines = f.readlines()
             
         header_idx = 0
         for i, line in enumerate(lines):
-            if 'Ownership' in line and 'Plant' in line:
+            if 'Ownership' in line:
                 header_idx = i
                 break
                 
-        df = pd.read_csv(file_name, skiprows=header_idx)
+        df = pd.read_csv(target_file, skiprows=header_idx)
         
         def extract_num(val):
             if pd.isna(val): return None
@@ -85,32 +89,41 @@ def load_inventory_data(location_name):
             return float(match.group()) if match else None
             
         if 'Price/mt' not in df.columns:
-            return pd.DataFrame() # Bails out if the file is totally unreadable
+            return pd.DataFrame() 
             
-        # Convert Price/mt to Price/lb and round up
         df['Price/lb'] = (df['Price/mt'] / 2204.62).apply(lambda x: round_cents(x) if pd.notna(x) else x)
-        
-        # Convert mm to inches
         df['Paper Size (Inches)'] = df['Roll Width'].apply(extract_num) / 25.4
         df['Paper Size (Inches)'] = df['Paper Size (Inches)'].round(2)
         
-        # Convert gsm to pounds
         df['Paper Weight (#)'] = df['Grammage (g/m²)'].apply(extract_num) * 0.61386
         df['Paper Weight (#)'] = df['Paper Weight (#)'].round(1)
         
-        # Clean up empty rows
         df = df.dropna(subset=['Paper Size (Inches)', 'Paper Weight (#)', 'Price/lb'])
         return df
     except Exception as e:
         return pd.DataFrame()
 
-
 st.set_page_config(page_title="Print Production Bid Tool", layout="wide")
 st.title("📰 Newspaper Job Bid Worksheet")
 
+# ----- THE GATEKEEPER -----
+st.sidebar.header("System Access")
+entered_name = st.sidebar.text_input("Enter User Name:").strip().lower()
+
+if not entered_name:
+    st.info("Please enter your assigned name in the sidebar to unlock the tool.")
+    st.stop() # This halts the entire app until they type something
+
+if entered_name not in AUTHORIZED_USERS:
+    st.error("Name not recognized by the system. Check your spelling.")
+    st.stop()
+
 # ----- SIDEBAR INPUTS -----
 st.sidebar.header("Job Specs & Location")
-selected_location = st.sidebar.selectbox("Select Production Facility", list(LOCATIONS.keys()))
+
+# This dynamically restricts the dropdown to whatever facilities their name allows
+allowed_facilities = AUTHORIZED_USERS[entered_name]
+selected_location = st.sidebar.selectbox("Select Production Facility", allowed_facilities)
 rates = LOCATIONS[selected_location]
 
 customer_name = st.sidebar.text_input("Customer", "Mantako")
@@ -136,14 +149,12 @@ if not inventory_df.empty:
         inventory_loaded_successfully = True
         selected_size = st.sidebar.selectbox("Paper Size (Web Width in inches)", sizes)
         
-        # Cascade filter the weights based on the selected size
         filtered_by_size = inventory_df[inventory_df['Paper Size (Inches)'] == selected_size]
         weights = sorted(filtered_by_size['Paper Weight (#)'].unique().tolist())
         
         if len(weights) > 0:
             selected_weight = st.sidebar.selectbox("Paper Weight (Basis lbs)", weights)
             
-            # Calculate the exact average price for this roll combination
             filtered_final = filtered_by_size[filtered_by_size['Paper Weight (#)'] == selected_weight]
             calculated_avg_price = filtered_final['Price/lb'].mean()
             
@@ -157,7 +168,6 @@ if not inventory_df.empty:
     else:
         inventory_loaded_successfully = False
 
-# The fallback happens seamlessly if the CSV is missing, empty, or unreadable
 if not inventory_loaded_successfully:
     st.sidebar.warning("Inventory missing or unreadable. Using manual inputs.")
     web_width = st.sidebar.number_input("Web Width (inches)", value=22.0)
@@ -179,9 +189,7 @@ mailroom_leader_hours = st.sidebar.number_input("Mailroom Leader Hours", value=3
 mailroom_helpers = st.sidebar.number_input("Mailroom Helpers", value=3)
 mailroom_helper_hours = st.sidebar.number_input("Mailroom Helper Hours", value=1.0)
 
-
 # ----- INVISIBLE MATH ENGINE -----
-# Plate Calculation Logic
 format_divisor = 2 if page_format == "Broadsheet" else (4 if page_format == "Tabloid" else 8)
 run_multiplier = 2 if run_type == "Straight" else 1
 
@@ -189,14 +197,12 @@ black_plates = math.ceil(total_pages / format_divisor) * run_multiplier
 color_plates = math.ceil(color_pages / format_divisor) * 3 * run_multiplier
 total_plates = black_plates + color_plates
 
-# Paper Logic
 total_impressions = press_run * total_pages
 pages_per_pound = 1900000 / (web_width * press_cutoff * basis_weight)
 
 pounds_of_waste = (total_impressions / pages_per_pound) * rates["waste_pct"]
 total_pounds = (total_impressions / pages_per_pound) + pounds_of_waste
 
-# ALL COSTS ARE AGGRESSIVELY ROUNDED UP TO THE NEAREST CENT
 newsprint_cost = round_cents(total_pounds * dynamic_paper_cost)
 black_ink_cost = round_cents(total_impressions * rates["black_ink_cost_per_impression"])
 
@@ -227,7 +233,6 @@ overhead_cost = round_cents(subtotal * rates["overhead_pct"])
 total_cost = round_cents(subtotal + overhead_cost)
 profit = round_cents(total_cost * rates["profit_margin"])
 total_charge = round_cents(total_cost + profit)
-
 
 # ----- DASHBOARD DISPLAY -----
 st.header(f"Bid Summary: {customer_name} - {job_desc}")
