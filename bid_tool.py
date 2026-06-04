@@ -4,13 +4,19 @@ def round_cents(val): return round(val + 1e-9, 2)
 
 AUTH = {"bob patchen":["Madelia (HOP)"], "boat hen":["Madelia (HOP)"], "mike christman":["Madelia (HOP)"], "brenda ahern":["Madelia (HOP)"], "terry saar":["Madelia (HOP)"]}
 
+LOCS = {
+    "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0}
+}
+
 def load_inv():
     target = next((f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')), None)
     if not target: return pd.DataFrame(), "No inventory CSV found."
     try:
         with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
         h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
+        if h_idx == -1: return pd.DataFrame(), "Header not found."
         df = pd.DataFrame(data[h_idx+1:], columns=[str(h).strip() for h in data[h_idx]])
+        # Standardize column mapping
         cmap = {'Price/mt':'Price', 'Net Price/mt':'Net_Price', 'Roll Width':'Width', 'Grammage (g/m²)':'Grammage'}
         df = df.rename(columns=cmap)
         def ext(v):
@@ -31,7 +37,7 @@ if not user or user not in AUTH: st.stop()
 
 inv, msg = load_inv()
 if inv.empty:
-    st.error(f"Inventory System Offline: {msg}")
+    st.error(f"Inventory Error: {msg}")
     st.stop()
 
 cust, desc = st.sidebar.text_input("Customer", "Mantako"), st.sidebar.text_input("Job", "Free Press")
