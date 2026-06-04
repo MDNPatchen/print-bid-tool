@@ -2,7 +2,7 @@ import streamlit as st, pandas as pd, math, re, os, csv
 
 def round_cents(val): return round(val + 1e-9, 2)
 
-# AUTH dictionary fully restored to include Minot for all users
+# Restored Minot and Madelia logic
 AUTH = {
     "bob patchen":["Madelia (HOP)", "Minot"], 
     "boat hen":["Madelia (HOP)", "Minot"], 
@@ -17,59 +17,58 @@ LOCS = {
 }
 
 def load_inv():
-    # Load and merge ALL inventory files found in the folder
+    # Robust loader that finds columns by keywords
     files = [f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')]
     if not files: return pd.DataFrame(), "No inventory CSV found."
-    
     dfs = []
-    for target in files:
-        try:
-            with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
+    for f_name in files:
+        with open(f_name, 'r', encoding='latin1', errors='replace') as f:
+            data = list(csv.reader(f))
             h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
             if h_idx == -1: continue
             df = pd.DataFrame(data[h_idx+1:], columns=[str(h).strip() for h in data[h_idx]])
             dfs.append(df)
-        except: continue
-        
-    if not dfs: return pd.DataFrame(), "Could not parse inventory files."
+    if not dfs: return pd.DataFrame(), "No valid data."
     df = pd.concat(dfs, ignore_index=True)
     
-    cmap = {'Price/mt':'Price', 'Net Price/mt':'Net_Price', 'Roll Width':'Width', 'Grammage (g/m²)':'Grammage'}
-    df = df.rename(columns=cmap)
+    def find_col(k): return next((c for c in df.columns if k.lower() in c.lower()), None)
     
     def ext(v):
         m = re.search(r'[\d\.]+', str(v))
         return float(m.group()) if m and not pd.isna(v) else None
+        
+    df['Price'] = df[find_col('Price/mt')].apply(ext)
+    df['Net'] = df[find_col('Net Price/mt')].apply(ext)
+    df['Width'] = df[find_col('Roll Width')].apply(ext)
+    df['Gram'] = df[find_col('Grammage')].apply(ext)
     
-    df['P'] = df['Price'].apply(ext); df['Net'] = df['Net_Price'].apply(ext); df['W_mm'] = df['Width'].apply(ext); df['G'] = df['Grammage'].apply(ext)
-    df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
-    df = df.dropna(subset=['Price_Final','W_mm','G'])
-    df['Price/lb'] = (df['Price_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
-    df['Width'] = (df['W_mm']/25.4).round(1); df['Weight'] = (df['G']*0.61386).round(1)
-    return df.dropna(subset=['Width','Weight','Price/lb']), "Success"
+    df['P_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['Price'])
+    df = df.dropna(subset=['P_Final','Width','Gram'])
+    df['Price/lb'] = (df['P_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
+    df['W_in'] = (df['Width']/25.4).round(1)
+    df['Wt'] = (df['Gram']*0.61386).round(1)
+    return df.dropna(subset=['W_in','Wt','Price/lb']), "Success"
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 user = st.sidebar.text_input("User Name:").strip().lower()
 st.sidebar.button("Unlock")
 if not user or user not in AUTH: st.stop()
 
-# Facility selection restored
 loc = st.sidebar.selectbox("Facility", AUTH[user])
 rates = LOCS[loc]
+
+inv, msg = load_inv()
+if inv.empty: st.error(msg); st.stop()
 
 cust, desc = st.sidebar.text_input("Customer", "Mantako"), st.sidebar.text_input("Job", "Free Press")
 run, waste = st.sidebar.number_input("Press Run", 5890, step=100), st.sidebar.number_input("Waste Copies", 589, step=50)
 fmt, rtype = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"]), st.sidebar.selectbox("Run Type", ["Collect", "Straight"])
 t_pgs, c_pgs = st.sidebar.number_input("Total Pages", 20), st.sidebar.number_input("Color Pages", 4)
 
-inv, msg = load_inv()
-if inv.empty:
-    st.error(f"Inventory Error: {msg}"); st.stop()
-
-sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
-wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
-p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10)
-st.sidebar.success(f"Inventory Active: Billed at ${p_cost:.3f}/lb")
+sz = st.sidebar.selectbox("Web Width", sorted(inv['W_in'].unique()))
+wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['W_in']==sz]['Wt'].unique()))
+p_cost = round_cents(inv[(inv['W_in']==sz)&(inv['Wt']==wt)]['Price/lb'].mean() * 1.10)
+st.sidebar.success(f"Inventory Active: ${p_cost:.3f}/lb")
 
 cut = st.sidebar.number_input("Press Cut-Off", 21.25)
 cp, r_hrs, p_ldrs, p_hlps, mr = st.sidebar.number_input("Plate Hrs", 0.5), st.sidebar.number_input("Run Hrs", 1.0), st.sidebar.number_input("Leaders", 1), st.sidebar.number_input("Helpers", 2), st.sidebar.number_input("MR Hrs", 0.5)
@@ -90,7 +89,7 @@ t_chg = round_cents(t_cost * 1.25)
 
 st.header(f"Bid Summary: {cust} - {desc}")
 c1, c2, c3 = st.columns(3)
-c1.metric("Paper", f"${c_news:.2f}"); c2.metric("Labor", f"${(c_sub-c_news-c_ink-(tot_pl*5.25)-(tot_pl*0.75)-((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}"); c3.metric("Ink/Plates", f"${(c_ink+(tot_pl*5.25)+(tot_pl*0.75)+(cp*rates['camera_plate_rate'])+( (math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}")
+c1.metric("Paper", f"${c_news:.2f}"); c2.metric("Labor", f"${(c_sub-c_news-c_ink-(tot_pl*5.25)-(tot_pl*0.75)-((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}"); c3.metric("Ink/Plates", f"${(c_ink+(tot_pl*5.25)+(tot_pl*0.75)+(cp*rates['camera_plate_rate'])+((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}")
 st.divider()
 b1, b2 = st.columns(2)
 b1.metric("Total Cost", f"${t_cost:.2f}"); b2.metric("Total Charge", f"${t_chg:.2f}")
