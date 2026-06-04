@@ -1,0 +1,328 @@
+﻿Inventory Report,,,,,,,,,,,,,,,,,Date:  6/4/26  12:43 PM EST   ,,
+Inventory Date:  ,,1/1/00 to 5/31/26,,,,,,,,,,,,,,,,,
+Account:  ,,Gould,,,,,,,,,,,,,,,,,
+Plant:  ,,Minot,,,,,,,,,,,,,,,,,
+Paper Type:  ,,Rolls - All Paper Types,,,,,,,,,,,,,,,,,
+Supplier:  ,,All Suppliers,,,,,,,,,,,,,,,,,
+Definitions:  ,,Available: Not assigned;  Applied: Assigned but not consumed;  Rejected: Rejected but in plant;  WIP: Work In Process,,,,,,,,,,,,,,,,,
+Sorted by:  ,,Printer and Stock Size,,,,,,,,,,,,,,,,,
+Ownership,Printer,Plant,Received Date,Issue Date,End User PO#,Supplier,PO Number,Paper Type,Product Name,Grammage (g/m²),Roll Width,Roll ID,Roll Count,Available Quantity,Total Quantity,Price/mt,Cost,Net Price/mt,Net Cost
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010726,1,182,182,"$1,055.00",$192.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010721,1,182,182,"$1,055.00",$192.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010528,1,181,181,"$1,055.00",$190.96,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010523,1,181,181,"$1,055.00",$190.96,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010428,1,181,181,"$1,055.00",$190.96,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010423,1,181,181,"$1,055.00",$190.96,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010408,1,179,179,"$1,055.00",$188.85,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010308,1,179,179,"$1,055.00",$188.85,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010228,1,181,181,"$1,055.00",$190.96,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010223,1,181,181,"$1,055.00",$190.96,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010128,1,180,180,"$1,055.00",$189.90,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1010123,1,180,180,"$1,055.00",$189.90,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1009228,1,179,179,"$1,055.00",$188.85,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1009223,1,179,179,"$1,055.00",$188.85,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1009208,1,177,177,"$1,055.00",$186.74,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1009128,1,178,178,"$1,055.00",$187.79,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1009123,1,178,178,"$1,055.00",$187.79,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/20/22,,,OVOL USA,0635004420220501,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52E1009108,1,177,177,"$1,055.00",$186.74,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510716,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510711,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510616,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510611,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510574,1,179,179,"$1,130.00",$202.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510570,1,179,179,"$1,130.00",$202.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510545,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510540,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510516,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510511,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510474,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510470,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510445,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510440,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510416,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510411,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510374,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510370,1,179,179,"$1,130.00",$202.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510345,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510340,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510316,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510311,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510274,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510270,1,179,179,"$1,130.00",$202.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510245,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510240,1,178,178,"$1,130.00",$201.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510216,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/17/22,,,OVOL USA,0635004420221003,Hi-Brite,Inland Brite 72,52 ,279.00 mm,IEP52K1510211,1,177,177,"$1,130.00",$200.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/4/23,,,OVOL USA,0635THUN20231001,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V3J25094W,1,166,166,$651.20,$108.10,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/12/24,,,OVOL USA,0635THUN2024022,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V4B03054W,1,162,162,$634.67,$102.82,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/12/24,,,OVOL USA,0635THUN2024022,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V4B03045C,1,163,163,$634.67,$103.45,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18142D,1,161,161,$615.01,$99.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18142C,1,162,162,$615.01,$99.63,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18141D,1,161,161,$615.01,$99.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18126D,1,161,161,$615.01,$99.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18123D,1,161,161,$615.01,$99.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18123C,1,161,161,$615.01,$99.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18122C,1,161,161,$615.01,$99.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18115D,1,162,162,$615.01,$99.63,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18115C,1,162,162,$615.01,$99.63,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,5/21/25,,,OVOL USA,0635THUN20250501,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18114C,1,162,162,$615.01,$99.63,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18127C,1,161,161,$614.93,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18126C,1,160,160,$614.93,$98.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18125C,1,160,160,$614.93,$98.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18124C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18123C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18122C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18121C,1,160,160,$614.93,$98.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18117C,1,160,160,$614.93,$98.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18116C,1,160,160,$614.93,$98.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18115C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18114C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18113C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18112C,1,160,160,$614.93,$98.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18111C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18107C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18105E,1,158,158,$614.93,$97.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18105D,1,158,158,$614.93,$97.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18105C,1,159,159,$614.93,$97.77,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18104E,1,158,158,$614.93,$97.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18104D,1,158,158,$614.93,$97.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18102E,1,157,157,$614.93,$96.54,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18102D,1,157,157,$614.93,$96.54,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5H18102C,1,158,158,$614.93,$97.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18133D,1,157,157,$614.93,$96.54,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18133C,1,157,157,$614.93,$96.54,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5E18131D,1,157,157,$614.93,$96.54,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23056V,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23056U,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23056C,1,160,160,$631.32,$101.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23055V,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23055U,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23055C,1,160,160,$631.32,$101.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23054W,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23054V,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23054U,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23054C,1,160,160,$631.32,$101.01,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23053W,1,157,157,$631.32,$99.12,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23053V,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23053U,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23053C,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23052W,1,157,157,$631.32,$99.12,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23052V,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23052U,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23052C,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23051E,1,157,157,$631.32,$99.12,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23051D,1,157,157,$631.32,$99.12,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23051C,1,158,158,$631.32,$99.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23046E,1,161,161,$631.32,$101.64,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23046D,1,161,161,$631.32,$101.64,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23046C,1,161,161,$631.32,$101.64,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23045E,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23045D,1,159,159,$631.32,$100.38,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/5/25,,,OVOL USA,0635THUN20251102,Newsprint,Thunder Bay Newsprint,45 ,279.00 mm,L2V5L23045C,1,161,161,$631.32,$101.64,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16152C,1,152,152,$660.00,$100.32,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16151C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16146C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16145C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16144C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16143C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16142C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16141L,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16141I,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16141F,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16141C,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16134L,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16134I,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16134F,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1M16134C,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06152B,1,152,152,$660.00,$100.32,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06151B,1,152,152,$660.00,$100.32,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06146B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06145B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06144B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06143F,1,147,147,$660.00,$97.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06143E,1,147,147,$660.00,$97.02,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06143B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06142B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06141K,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06141H,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06141E,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06141B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06134K,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06134H,1,150,150,$660.00,$99.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06134E,1,151,151,$660.00,$99.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Newsprint,Alberta News,45 ,279.00 mm,AB1K06134B,1,151,151,$660.00,$99.66,$0.00,$0.00
+Quantity Subtotals: ,,,,,,,,,,,,,144,"23,550","23,550",,"$18,769.19",,$0.00
+,,,,,,,,,,,,,,,,,,,
+Supplier,Ogden Newspapers,Minot,8/4/23,,,OVOL USA,0635004420230803,Hi-Brite,Centennial Offset,74 ,559.00 mm,IEP53H0407350,1,372,372,"$1,020.00",$379.44,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/4/23,,,OVOL USA,0635004420230803,Hi-Brite,Centennial Offset,74 ,559.00 mm,IEP53H0407340,1,372,372,"$1,020.00",$379.44,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/3/23,,,OVOL USA,0635THUN20231002,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V3J26123G,1,337,337,$651.20,$219.45,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,10/3/23,,,OVOL USA,0635THUN20231002,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V3J26123F,1,337,337,$651.20,$219.45,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/5/24,,,OVOL USA,0635THUN20240802,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4G27111E,1,318,318,$614.75,$195.49,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/17/24,,,OVOL USA,0635THUN20241101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4L14064D,1,318,318,$629.81,$200.28,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/17/24,,,OVOL USA,0635THUN20241101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4L13078C,1,300,300,$629.81,$188.94,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/17/24,,,OVOL USA,0635THUN20241101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4L13077D,1,321,321,$629.81,$202.17,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/17/24,,,OVOL USA,0635THUN20241101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4L13076D,1,320,320,$629.81,$201.54,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/9/25,,,OVOL USA,0635THUN20250401,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5D08054X,1,314,314,$613.81,$192.74,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/9/25,,,OVOL USA,0635THUN20250401,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5D08054W,1,314,314,$613.81,$192.74,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,7/21/25,,,OVOL USA,0635THUN20250701,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5G12195V,1,318,318,$614.42,$195.39,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,7/21/25,,,OVOL USA,0635THUN20250701,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5G12183G,1,320,320,$614.42,$196.61,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5H18111E,1,313,313,$614.93,$192.47,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5H18111D,1,314,314,$614.93,$193.09,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5H18107B,1,319,319,$614.93,$196.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/22/25,,,OVOL USA,0635THUN20250802,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5H18107A,1,319,319,$614.93,$196.16,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12133W,1,325,325,$631.32,$205.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12133V,1,325,325,$631.32,$205.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12132W,1,324,324,$631.32,$204.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12132V,1,325,325,$631.32,$205.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12036W,1,327,327,$631.32,$206.44,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12036V,1,328,328,$631.32,$207.07,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12034X,1,324,324,$631.32,$204.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,11/22/25,,,OVOL USA,0635THUN20251101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V5L12034W,1,324,324,$631.32,$204.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A18111E,1,311,311,$640.10,$199.07,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A16085B,1,321,321,$640.10,$205.47,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A16084B,1,320,320,$640.10,$204.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A16083D,1,317,317,$640.10,$202.91,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A16083C,1,318,318,$640.10,$203.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A16083B,1,319,319,$640.10,$204.19,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A14057X,1,316,316,$640.10,$202.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A14057W,1,315,315,$640.10,$201.63,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A14057V,1,315,315,$640.10,$201.63,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A14051X,1,312,312,$640.10,$199.71,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,2/4/26,,,OVOL USA,0635THUN20260101,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V6A14051M,1,311,311,$640.10,$199.07,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/8/24,,,OVOL USA,0635THUN50240801,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4H06195W,1,320,320,$614.75,$196.72,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/8/24,,,OVOL USA,0635THUN50240801,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4H06195U,1,320,320,$614.75,$196.72,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/8/24,,,OVOL USA,0635THUN50240801,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4H06195T,1,320,320,$614.75,$196.72,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/8/24,,,OVOL USA,0635THUN50240801,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4H06195D,1,320,320,$614.75,$196.72,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,8/8/24,,,OVOL USA,0635THUN50240801,Newsprint,Thunder Bay Newsprint,45 ,559.00 mm,L2V4H06195C,1,321,321,$614.75,$197.33,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14281H,1,288,288,$827.00,$238.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14281F,1,288,288,$827.00,$238.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14281D,1,288,288,$827.00,$238.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14281B,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14273M,1,291,291,$827.00,$240.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14273F,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14273D,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14273B,1,291,291,$827.00,$240.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14272J,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14271J,1,288,288,$827.00,$238.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14266F,1,294,294,$827.00,$243.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14266D,1,294,294,$827.00,$243.14,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14266B,1,295,295,$827.00,$243.97,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14265H,1,292,292,$827.00,$241.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14265F,1,293,293,$827.00,$242.31,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14265D,1,292,292,$827.00,$241.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14265B,1,293,293,$827.00,$242.31,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14264J,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14264D,1,292,292,$827.00,$241.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14264B,1,292,292,$827.00,$241.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14263J,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14263H,1,292,292,$827.00,$241.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14263F,1,291,291,$827.00,$240.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14262J,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14262F,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14262D,1,290,290,$827.00,$239.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14262B,1,291,291,$827.00,$240.66,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14261N,1,288,288,$827.00,$238.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14261J,1,289,289,$827.00,$239.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,12/18/25,,,OVOL USA,MANUAL531016204,Hi-Brite,HB News,51.8 ,559.00 mm,AB1M14261H,1,288,288,$827.00,$238.18,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203460,1,344,344,$725.00,$249.40,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203450,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203431,1,344,344,$725.00,$249.40,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203421,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203411,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203402,1,340,340,$725.00,$246.50,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203389,1,342,342,$725.00,$247.95,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203379,1,344,344,$725.00,$249.40,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203360,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203350,1,342,342,$725.00,$247.95,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203340,1,344,344,$725.00,$249.40,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203331,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203321,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203311,1,342,342,$725.00,$247.95,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203289,1,336,336,$725.00,$243.60,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203279,1,338,338,$725.00,$245.05,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203269,1,337,337,$725.00,$244.33,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203240,1,337,337,$725.00,$244.33,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203231,1,338,338,$725.00,$245.05,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203221,1,339,339,$725.00,$245.78,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203211,1,346,346,$725.00,$250.85,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203202,1,344,344,$725.00,$249.40,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202689,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202679,1,360,360,$725.00,$261.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202669,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202660,1,359,359,$725.00,$260.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202650,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202640,1,360,360,$725.00,$261.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202631,1,359,359,$725.00,$260.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202621,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202611,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202602,1,354,354,$725.00,$256.65,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202589,1,357,357,$725.00,$258.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202579,1,360,360,$725.00,$261.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202569,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202560,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202550,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202540,1,360,360,$725.00,$261.00,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202531,1,359,359,$725.00,$260.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202521,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202511,1,357,357,$725.00,$258.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202502,1,354,354,$725.00,$256.65,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202489,1,357,357,$725.00,$258.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202479,1,359,359,$725.00,$260.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202469,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202460,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202450,1,357,357,$725.00,$258.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202440,1,359,359,$725.00,$260.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202431,1,359,359,$725.00,$260.27,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202421,1,358,358,$725.00,$259.55,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260319,OVOL USA,531016789,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1202411,1,357,357,$725.00,$258.83,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204631,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204621,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204611,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204602,1,349,349,$725.00,$253.03,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204579,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204569,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204560,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204550,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204531,1,353,353,$725.00,$255.93,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204521,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204502,1,349,349,$725.00,$253.03,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204489,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204479,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204450,1,349,349,$725.00,$253.03,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204440,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204431,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204421,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204411,1,349,349,$725.00,$253.03,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204402,1,347,347,$725.00,$251.58,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204389,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204379,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204369,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204360,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204350,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204340,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204331,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204321,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204311,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204302,1,348,348,$725.00,$252.30,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204289,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204279,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204260,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204240,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204231,1,353,353,$725.00,$255.93,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204211,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204202,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204179,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204169,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204160,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204150,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204140,1,352,352,$725.00,$255.20,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204131,1,353,353,$725.00,$255.93,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204121,1,351,351,$725.00,$254.48,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204111,1,350,350,$725.00,$253.75,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1204102,1,348,348,$725.00,$252.30,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203489,1,343,343,$725.00,$248.68,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203479,1,345,345,$725.00,$250.13,$0.00,$0.00
+Supplier,Ogden Newspapers,Minot,4/16/26,,ND20260315,OVOL USA,531016788,Newsprint,Inland Newsprint,45 ,559.00 mm,IEP56D1203469,1,343,343,$725.00,$248.68,$0.00,$0.00
+Quantity Subtotals: ,,,,,,,,,,,,,170,"56,634","56,634",,"$40,969.15",,$0.00
+,,,,,,,,,,,,,,,,,,,
+Quantity Totals: ,,,,,,,,,,,,,314,"80,184","80,184",,"$59,738.34",,$0.00
