@@ -4,12 +4,7 @@ def round_cents(val): return round(val + 1e-9, 2)
 
 AUTH = {"bob patchen":["Madelia (HOP)"], "boat hen":["Madelia (HOP)"], "mike christman":["Madelia (HOP)"], "brenda ahern":["Madelia (HOP)"], "terry saar":["Madelia (HOP)"]}
 
-LOCS = {
-    "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0}
-}
-
 def load_inv():
-    # Looks for any CSV that looks like an inventory file
     target = next((f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')), None)
     if not target: return pd.DataFrame(), "No inventory CSV found."
     try:
@@ -34,48 +29,39 @@ user = st.sidebar.text_input("User Name:").strip().lower()
 st.sidebar.button("Unlock")
 if not user or user not in AUTH: st.stop()
 
-loc = st.sidebar.selectbox("Facility", AUTH[user])
-rates = LOCS[loc]
+inv, msg = load_inv()
+if inv.empty:
+    st.error(f"Inventory System Offline: {msg}")
+    st.stop()
+
 cust, desc = st.sidebar.text_input("Customer", "Mantako"), st.sidebar.text_input("Job", "Free Press")
 run, waste = st.sidebar.number_input("Press Run", 5890, step=100), st.sidebar.number_input("Waste Copies", 589, step=50)
 fmt, rtype = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"]), st.sidebar.selectbox("Run Type", ["Collect", "Straight"])
 t_pgs, c_pgs = st.sidebar.number_input("Total Pages", 20), st.sidebar.number_input("Color Pages", 4)
 
-inv, msg = load_inv()
-p_cost, w_in, b_wt = 0.0, 22.0, 27.7
-if not inv.empty:
-    sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
-    wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
-    p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10)
-    w_in, b_wt = sz, wt
-    st.sidebar.success(f"Inventory Link Active: Billed at ${p_cost:.3f}/lb")
-else:
-    w_in = st.sidebar.number_input("Web Width", 22.0)
-    b_wt = st.sidebar.number_input("Basis Weight", 27.7)
-    p_cost = round_cents(rates["newsprint_cost_per_lb"] * 1.10)
-    st.sidebar.info(f"Manual Rate: ${p_cost:.3f}/lb")
+sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
+wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
+p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10)
+st.sidebar.success(f"Inventory Active: Billed at ${p_cost:.3f}/lb")
 
 cut = st.sidebar.number_input("Press Cut-Off", 21.25)
 cp, r_hrs, p_ldrs, p_hlps, mr = st.sidebar.number_input("Plate Hrs", 0.5), st.sidebar.number_input("Run Hrs", 1.0), st.sidebar.number_input("Leaders", 1), st.sidebar.number_input("Helpers", 2), st.sidebar.number_input("MR Hrs", 0.5)
 ml_ldr, ml_lhrs, ml_hlp, ml_hhrs = st.sidebar.number_input("ML Leaders", 1), st.sidebar.number_input("ML L-Hrs", 0.0), st.sidebar.number_input("ML Helpers", 3), st.sidebar.number_input("ML H-Hrs", 0.0)
 
-if user == "boat hen": st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
-
 f_div = 2 if fmt=="Broadsheet" else (4 if fmt=="Tabloid" else 8)
 r_mult = 2 if rtype=="Straight" else 1
 tot_pl = (math.ceil(t_pgs/f_div) * r_mult) + (math.ceil(c_pgs/f_div) * 3 * r_mult)
 total_pages_printed = (run + waste) * t_pgs
-tot_lbs = total_pages_printed / (1900000 / (w_in * cut * b_wt))
+tot_lbs = total_pages_printed / (1900000 / (sz * cut * wt))
 c_news = round_cents(tot_lbs * p_cost)
-c_ink = round_cents(total_pages_printed * rates["black_ink_cost_per_impression"])
-c_sub = round_cents(c_news + c_ink + (p_ldrs*rates["press_leader_rate"]*r_hrs) + (p_hlps*rates["press_helper_rate"]*r_hrs) + (mr*rates["make_ready_rate"]) + (tot_pl*5.25) + (tot_pl*0.75) + (cp*rates["camera_plate_rate"]) + ((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95) + (ml_ldr*ml_lhrs*rates["mailroom_leader_rate"] + ml_hlp*ml_hhrs*rates["mailroom_helper_rate"]))
-ovr = round_cents(c_sub * rates["overhead_pct"])
-t_cost = round_cents(c_sub + ovr)
-t_chg = round_cents(t_cost * (1 + rates["profit_margin"]))
+c_ink = round_cents(total_pages_printed * 0.0006)
+c_sub = round_cents(c_news + c_ink + (p_ldrs*30.0*r_hrs) + (p_hlps*25.0*r_hrs) + (mr*30.0) + (tot_pl*5.25) + (tot_pl*0.75) + (cp*30.0) + ((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95) + (ml_ldr*ml_lhrs*30.0 + ml_hlp*ml_hhrs*25.0))
+t_cost = round_cents(c_sub * 1.26)
+t_chg = round_cents(t_cost * 1.25)
 
 st.header(f"Bid Summary: {cust} - {desc}")
 c1, c2, c3 = st.columns(3)
-c1.metric("Paper", f"${c_news:.2f}"); c2.metric("Labor", f"${(c_sub-c_news-c_ink-(tot_pl*5.25)-(tot_pl*0.75)-((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}"); c3.metric("Ink/Plates", f"${(c_ink+(tot_pl*5.25)+(tot_pl*0.75)+(cp*rates['camera_plate_rate'])+( (math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}")
+c1.metric("Paper", f"${c_news:.2f}"); c2.metric("Labor", f"${(c_sub-c_news-c_ink-(tot_pl*5.25)-(tot_pl*0.75)-((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}"); c3.metric("Ink/Plates", f"${(c_ink+(tot_pl*5.25)+(tot_pl*0.75)+(cp*30.0)+((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}")
 st.divider()
 b1, b2 = st.columns(2)
 b1.metric("Total Cost", f"${t_cost:.2f}"); b2.metric("Total Charge", f"${t_chg:.2f}")
