@@ -108,4 +108,9 @@ def load_inventory_data(location_name):
             
         df['Target_Price_Num'] = df['Target_Price'].apply(extract_num)
         df['Target_Width_Num'] = df['Target_Width'].apply(extract_num)
-        df['Target_Grammage_Num'] = df['
+        df['Target_Grammage_Num'] = df['Target_Grammage'].apply(extract_num)
+        
+        df = df.dropna(subset=['Target_Price_Num', 'Target_Width_Num', 'Target_Grammage_Num'])
+        
+        df['Price/lb'] = (df['Target_Price_Num'] / 2204.62).apply(lambda x: round_cents(x))
+        df['Paper Size (Inches)'] = (df
