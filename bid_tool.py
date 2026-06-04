@@ -57,3 +57,18 @@ LOCATIONS = {
 # --- BULLETPROOF RAW TEXT INVENTORY LOADER ---
 def load_inventory_data(location_name):
     base_name = location_name.split(" ")[0].lower()
+    
+    all_files = os.listdir('.')
+    target_file = None
+    for f in all_files:
+        if base_name in f.lower() and f.lower().endswith('.csv'):
+            target_file = f
+            break
+            
+    if not target_file:
+        return pd.DataFrame(), f"Could not find any CSV file containing '{base_name}' in the vault."
+        
+    try:
+        with open(target_file, 'r', encoding='latin1', errors='replace') as f:
+            reader = csv.reader(f)
+            data =
