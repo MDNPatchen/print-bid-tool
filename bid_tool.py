@@ -86,12 +86,16 @@ def load_inventory_data(location_name):
         rows = data[header_idx+1:]
         df = pd.DataFrame(rows, columns=headers)
         
+        # Smarter column mapping to avoid the "ambiguous Series" error (grabbing duplicates)
         col_map = {}
         for col in df.columns:
             cl = str(col).lower()
-            if 'grammage' in cl: col_map[col] = 'Target_Grammage'
-            if 'width' in cl: col_map[col] = 'Target_Width'
-            if 'price/mt' in cl or 'price / mt' in cl: col_map[col] = 'Target_Price'
+            if 'grammage' in cl and 'Target_Grammage' not in col_map.values(): 
+                col_map[col] = 'Target_Grammage'
+            elif 'width' in cl and 'Target_Width' not in col_map.values(): 
+                col_map[col] = 'Target_Width'
+            elif ('price/mt' in cl or 'price / mt' in cl) and 'net' not in cl and 'Target_Price' not in col_map.values(): 
+                col_map[col] = 'Target_Price'
             
         df = df.rename(columns=col_map)
         
