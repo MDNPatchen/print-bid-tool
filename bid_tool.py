@@ -65,12 +65,27 @@ if st.session_state.auth_user is None:
 user_input = st.session_state.auth_user
 user_data = AUTH[user_input]
 
-# --- 2. START NEW BID BUTTON ---
+# --- 2. HARD RESET LOGIC FOR NEW BID ---
 def start_new_bid():
-    keys_to_clear = ['cust', 'job', 'fmt', 'rtype', 'run', 'waste', 't_pgs', 'c_pgs', 'cut', 'cp', 'r_hrs', 'mr', 'p_ldrs', 'p_hlps', 'ml_ldr', 'ml_lhrs', 'ml_hlp', 'ml_hhrs']
-    for k in keys_to_clear:
-        if k in st.session_state:
-            del st.session_state[k]
+    # Force memory state back to strict defaults
+    st.session_state.cust = ""
+    st.session_state.job = ""
+    st.session_state.fmt = "Broadsheet"
+    st.session_state.rtype = "Collect"
+    st.session_state.run = 0
+    st.session_state.waste = 0
+    st.session_state.t_pgs = 0
+    st.session_state.c_pgs = 0
+    st.session_state.cut = 21.25
+    st.session_state.cp = 0.0
+    st.session_state.r_hrs = 0.0
+    st.session_state.mr = 0.0
+    st.session_state.p_ldrs = 0
+    st.session_state.p_hlps = 0
+    st.session_state.ml_ldr = 0
+    st.session_state.ml_lhrs = 0.0
+    st.session_state.ml_hlp = 0
+    st.session_state.ml_hhrs = 0.0
 
 c1_side, c2_side = st.sidebar.columns(2)
 c1_side.button("Start New Bid", on_click=start_new_bid, type="primary")
@@ -90,14 +105,19 @@ if inv.empty:
 
 # --- 3. SIDEBAR INPUTS (Tied to Session State Keys) ---
 st.sidebar.header("Job Specs")
-cust = st.sidebar.text_input("Customer", value="", key="cust")
-job = st.sidebar.text_input("Job Name", value="", key="job")
+cust = st.sidebar.text_input("Customer", key="cust")
+job = st.sidebar.text_input("Job Name", key="job")
+
+# Safeguards to initialize session state properly if they don't exist yet
+if 'fmt' not in st.session_state: st.session_state.fmt = "Broadsheet"
+if 'rtype' not in st.session_state: st.session_state.rtype = "Collect"
+
 fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"], key="fmt")
 rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"], key="rtype")
-run = st.sidebar.number_input("Press Run", value=0, step=100, key="run")
-waste = st.sidebar.number_input("Waste Copies", value=0, step=50, key="waste")
-t_pgs = st.sidebar.number_input("Total Pages", value=0, key="t_pgs")
-c_pgs = st.sidebar.number_input("Color Pages", value=0, key="c_pgs")
+run = st.sidebar.number_input("Press Run", step=100, key="run")
+waste = st.sidebar.number_input("Waste Copies", step=50, key="waste")
+t_pgs = st.sidebar.number_input("Total Pages", key="t_pgs")
+c_pgs = st.sidebar.number_input("Color Pages", key="c_pgs")
 
 st.sidebar.header("Paper")
 sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()), key="sz")
@@ -105,18 +125,20 @@ wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight']
 p_cost = inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10
 
 st.sidebar.header("Labor")
-cut = st.sidebar.number_input("Press Cut-Off", value=21.25, key="cut")
-cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.0, key="cp"))
-r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=0.0, key="r_hrs"))
-mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.0, key="mr"))
-p_ldrs = st.sidebar.number_input("Press Leaders", value=0, key="p_ldrs")
-p_hlps = st.sidebar.number_input("Press Helpers", value=0, key="p_hlps")
+if 'cut' not in st.session_state: st.session_state.cut = 21.25
+cut = st.sidebar.number_input("Press Cut-Off", key="cut")
+
+cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", key="cp"))
+r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", key="r_hrs"))
+mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", key="mr"))
+p_ldrs = st.sidebar.number_input("Press Leaders", key="p_ldrs")
+p_hlps = st.sidebar.number_input("Press Helpers", key="p_hlps")
 
 st.sidebar.subheader("Mailroom")
-ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=0, key="ml_ldr")
-ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0, key="ml_lhrs"))
-ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=0, key="ml_hlp")
-ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0, key="ml_hhrs"))
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", key="ml_ldr")
+ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", key="ml_lhrs"))
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", key="ml_hlp")
+ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", key="ml_hhrs"))
 
 if user_input == "boat hen": 
     st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
