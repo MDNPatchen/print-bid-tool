@@ -46,101 +46,72 @@ def load_inv():
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 
-# --- 1. TRUE SESSION LOGIN TO PREVENT HANG-UPS ---
-if 'auth_user' not in st.session_state:
-    st.session_state.auth_user = None
+# --- INVISIBLE SESSION LOCK (Fixes Blank Screen Bug) ---
+if 'unlocked' not in st.session_state: st.session_state.unlocked = False
+if 'current_user' not in st.session_state: st.session_state.current_user = ""
+if 'reset_key' not in st.session_state: st.session_state.reset_key = 0
 
-if st.session_state.auth_user is None:
-    st.sidebar.header("System Login")
-    u_in = st.sidebar.text_input("User Name:").strip().lower()
-    if st.sidebar.button("Unlock"):
-        if u_in in AUTH:
-            st.session_state.auth_user = u_in
-            st.rerun()
-        else:
-            st.sidebar.error("User not found. Please check spelling.")
-    st.stop()
+user_input = st.sidebar.text_input("User Name:", value=st.session_state.current_user).strip().lower()
 
-# Load User Context securely
-user_input = st.session_state.auth_user
-user_data = AUTH[user_input]
-
-# --- 2. HARD RESET LOGIC FOR NEW BID ---
-def start_new_bid():
-    # Force memory state back to strict defaults
-    st.session_state.cust = ""
-    st.session_state.job = ""
-    st.session_state.fmt = "Broadsheet"
-    st.session_state.rtype = "Collect"
-    st.session_state.run = 0
-    st.session_state.waste = 0
-    st.session_state.t_pgs = 0
-    st.session_state.c_pgs = 0
-    st.session_state.cut = 21.25
-    st.session_state.cp = 0.0
-    st.session_state.r_hrs = 0.0
-    st.session_state.mr = 0.0
-    st.session_state.p_ldrs = 0
-    st.session_state.p_hlps = 0
-    st.session_state.ml_ldr = 0
-    st.session_state.ml_lhrs = 0.0
-    st.session_state.ml_hlp = 0
-    st.session_state.ml_hhrs = 0.0
-
-c1_side, c2_side = st.sidebar.columns(2)
-c1_side.button("Start New Bid", on_click=start_new_bid, type="primary")
-if c2_side.button("Lock / Logout"):
-    st.session_state.auth_user = None
+if st.sidebar.button("Unlock"):
+    st.session_state.unlocked = True
+    st.session_state.current_user = user_input
     st.rerun()
 
-st.sidebar.divider()
+if not st.session_state.unlocked:
+    st.sidebar.info("Please enter your name and hit Unlock to begin.")
+    st.stop()
 
-loc = st.sidebar.selectbox("Facility", user_data["facs"])
+active_user = st.session_state.current_user
+if active_user not in AUTH:
+    st.sidebar.error("User not found. Please check spelling.")
+    st.stop()
+
+# --- START NEW BID LOGIC (Bulletproof Reset) ---
+def start_new_bid():
+    st.session_state.reset_key += 1 # Forces all widgets to instantly clear
+
+st.sidebar.button("Start New Bid", on_click=start_new_bid, type="primary")
+rk = st.session_state.reset_key # Key suffix for blanking widgets
+
+user_data = AUTH[active_user]
+loc = st.sidebar.selectbox("Facility", user_data["facs"], key=f"loc_{rk}")
 rates = LOCS[loc]
 
 inv, msg = load_inv()
-if inv.empty: 
-    st.error(msg)
-    st.stop()
+if inv.empty: st.error(msg); st.stop()
 
-# --- 3. SIDEBAR INPUTS (Tied to Session State Keys) ---
+# --- Sidebar Inputs (Clean & Empty Defaults) ---
 st.sidebar.header("Job Specs")
-cust = st.sidebar.text_input("Customer", key="cust")
-job = st.sidebar.text_input("Job Name", key="job")
-
-# Safeguards to initialize session state properly if they don't exist yet
-if 'fmt' not in st.session_state: st.session_state.fmt = "Broadsheet"
-if 'rtype' not in st.session_state: st.session_state.rtype = "Collect"
-
-fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"], key="fmt")
-rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"], key="rtype")
-run = st.sidebar.number_input("Press Run", step=100, key="run")
-waste = st.sidebar.number_input("Waste Copies", step=50, key="waste")
-t_pgs = st.sidebar.number_input("Total Pages", key="t_pgs")
-c_pgs = st.sidebar.number_input("Color Pages", key="c_pgs")
+cust = st.sidebar.text_input("Customer", value="", key=f"cust_{rk}")
+job = st.sidebar.text_input("Job Name", value="", key=f"job_{rk}")
+fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"], key=f"fmt_{rk}")
+rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"], key=f"rtype_{rk}")
+run = st.sidebar.number_input("Press Run", value=0, step=100, key=f"run_{rk}")
+waste = st.sidebar.number_input("Waste Copies", value=0, step=50, key=f"waste_{rk}")
+t_pgs = st.sidebar.number_input("Total Pages", value=0, key=f"t_pgs_{rk}")
+c_pgs = st.sidebar.number_input("Color Pages", value=0, key=f"c_pgs_{rk}")
 
 st.sidebar.header("Paper")
-sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()), key="sz")
-wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()), key="wt")
+sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()), key=f"sz_{rk}")
+wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()), key=f"wt_{rk}")
 p_cost = inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10
 
 st.sidebar.header("Labor")
-if 'cut' not in st.session_state: st.session_state.cut = 21.25
-cut = st.sidebar.number_input("Press Cut-Off", key="cut")
-
-cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", key="cp"))
-r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", key="r_hrs"))
-mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", key="mr"))
-p_ldrs = st.sidebar.number_input("Press Leaders", key="p_ldrs")
-p_hlps = st.sidebar.number_input("Press Helpers", key="p_hlps")
+cut = st.sidebar.number_input("Press Cut-Off", value=21.25, key=f"cut_{rk}")
+cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.0, key=f"cp_{rk}"))
+r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=0.0, key=f"r_hrs_{rk}"))
+mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.0, key=f"mr_{rk}"))
+p_ldrs = st.sidebar.number_input("Press Leaders", value=0, key=f"p_ldrs_{rk}")
+p_hlps = st.sidebar.number_input("Press Helpers", value=0, key=f"p_hlps_{rk}")
 
 st.sidebar.subheader("Mailroom")
-ml_ldr = st.sidebar.number_input("Mailroom Leaders", key="ml_ldr")
-ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", key="ml_lhrs"))
-ml_hlp = st.sidebar.number_input("Mailroom Helpers", key="ml_hlp")
-ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", key="ml_hhrs"))
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=0, key=f"ml_ldr_{rk}")
+ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0, key=f"ml_lhrs_{rk}"))
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=0, key=f"ml_hlp_{rk}")
+ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0, key=f"ml_hhrs_{rk}"))
 
-if user_input == "boat hen": 
+if active_user == "boat hen": 
     st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
 
 # --- Math Engine ---
@@ -201,7 +172,7 @@ if st.button("Save Quote"):
     else:
         new_q = {
             "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "User": user_input.title(),
+            "User": active_user.title(),
             "Customer": cust,
             "Job": job,
             "Facility": loc,
@@ -210,17 +181,16 @@ if st.button("Save Quote"):
         }
         f_exists = os.path.isfile("quotes.csv")
         pd.DataFrame([new_q]).to_csv("quotes.csv", mode='a', header=not f_exists, index=False)
-        st.success(f"Quote for {cust} saved successfully! Click 'Start New Bid' in the sidebar to clear the board.")
+        st.success(f"Quote for {cust} saved successfully! Click 'Start New Bid' to clear the board.")
 
 st.subheader("Saved Quotes")
 if os.path.exists("quotes.csv"):
     q_df = pd.read_csv("quotes.csv")
     if user_data["role"] == "user":
-        # Regular users only see their own work
-        q_df = q_df[q_df["User"].str.lower() == user_input.lower()]
+        q_df = q_df[q_df["User"].str.lower() == active_user.lower()]
     
     if not q_df.empty:
-        st.dataframe(q_df.iloc[::-1], use_container_width=True) # Reverses order so newest is at the top
+        st.dataframe(q_df.iloc[::-1], use_container_width=True)
     else:
         st.info("No saved quotes found for your account.")
 else:
