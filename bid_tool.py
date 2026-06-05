@@ -2,7 +2,6 @@ import streamlit as st, pandas as pd, math, re, os, csv
 
 def round_cents(val): return round(val + 1e-9, 2)
 
-# Restored Minot and Madelia logic
 AUTH = {
     "bob patchen":["Madelia (HOP)", "Minot"], 
     "boat hen":["Madelia (HOP)", "Minot"], 
@@ -17,7 +16,6 @@ LOCS = {
 }
 
 def load_inv():
-    # Robust loader that finds columns by keywords
     files = [f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')]
     if not files: return pd.DataFrame(), "No inventory CSV found."
     dfs = []
@@ -30,24 +28,20 @@ def load_inv():
             dfs.append(df)
     if not dfs: return pd.DataFrame(), "No valid data."
     df = pd.concat(dfs, ignore_index=True)
-    
+    df.columns = [re.sub(r'[^a-zA-Z0-9_]', '', c) for c in df.columns]
     def find_col(k): return next((c for c in df.columns if k.lower() in c.lower()), None)
     
+    p_c, n_c, w_c, g_c = find_col('Price'), find_col('NetPrice'), find_col('RollWidth'), find_col('Grammage')
     def ext(v):
         m = re.search(r'[\d\.]+', str(v))
         return float(m.group()) if m and not pd.isna(v) else None
         
-    df['Price'] = df[find_col('Price/mt')].apply(ext)
-    df['Net'] = df[find_col('Net Price/mt')].apply(ext)
-    df['Width'] = df[find_col('Roll Width')].apply(ext)
-    df['Gram'] = df[find_col('Grammage')].apply(ext)
-    
-    df['P_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['Price'])
-    df = df.dropna(subset=['P_Final','Width','Gram'])
+    df['P'] = df[p_c].apply(ext); df['Net'] = df[n_c].apply(ext); df['W_mm'] = df[w_c].apply(ext); df['G'] = df[g_c].apply(ext)
+    df['P_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
+    df = df.dropna(subset=['P_Final','W_mm','G'])
     df['Price/lb'] = (df['P_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
-    df['W_in'] = (df['Width']/25.4).round(1)
-    df['Wt'] = (df['Gram']*0.61386).round(1)
-    return df.dropna(subset=['W_in','Wt','Price/lb']), "Success"
+    df['Width'] = (df['W_mm']/25.4).round(1); df['Weight'] = (df['G']*0.61386).round(1)
+    return df.dropna(subset=['Width','Weight','Price/lb']), "Success"
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 user = st.sidebar.text_input("User Name:").strip().lower()
@@ -65,14 +59,19 @@ run, waste = st.sidebar.number_input("Press Run", 5890, step=100), st.sidebar.nu
 fmt, rtype = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"]), st.sidebar.selectbox("Run Type", ["Collect", "Straight"])
 t_pgs, c_pgs = st.sidebar.number_input("Total Pages", 20), st.sidebar.number_input("Color Pages", 4)
 
-sz = st.sidebar.selectbox("Web Width", sorted(inv['W_in'].unique()))
-wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['W_in']==sz]['Wt'].unique()))
-p_cost = round_cents(inv[(inv['W_in']==sz)&(inv['Wt']==wt)]['Price/lb'].mean() * 1.10)
+sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
+wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
+p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10)
 st.sidebar.success(f"Inventory Active: ${p_cost:.3f}/lb")
 
 cut = st.sidebar.number_input("Press Cut-Off", 21.25)
-cp, r_hrs, p_ldrs, p_hlps, mr = st.sidebar.number_input("Plate Hrs", 0.5), st.sidebar.number_input("Run Hrs", 1.0), st.sidebar.number_input("Leaders", 1), st.sidebar.number_input("Helpers", 2), st.sidebar.number_input("MR Hrs", 0.5)
-ml_ldr, ml_lhrs, ml_hlp, ml_hhrs = st.sidebar.number_input("ML Leaders", 1), st.sidebar.number_input("ML L-Hrs", 0.0), st.sidebar.number_input("ML Helpers", 3), st.sidebar.number_input("ML H-Hrs", 0.0)
+cp, r_hrs, p_ldrs, p_hlps, mr = st.sidebar.number_input("Plate Hrs", 0.5), st.sidebar.number_input("Run Hrs", 1.0), st.sidebar.number_input("Press Leaders", 1), st.sidebar.number_input("Press Helpers", 2), st.sidebar.number_input("Make-Ready Hours", 0.5)
+
+st.sidebar.subheader("Mailroom")
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", 1)
+ml_lhrs = st.sidebar.number_input("Mailroom Leader Hours", 0.0)
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", 3)
+ml_hhrs = st.sidebar.number_input("Mailroom Helper Hours", 0.0)
 
 if user == "boat hen": st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
 
