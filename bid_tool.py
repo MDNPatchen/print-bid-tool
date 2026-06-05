@@ -7,7 +7,6 @@ def apply_floor(val):
     v = float(val)
     return 1.0 if 0 < v < 1.0 else v
 
-# Setup Roles and Facilities
 AUTH = {
     "bob patchen": {"role": "admin", "facs": ["Madelia (HOP)", "Minot", "Webster City"]},
     "boat hen": {"role": "admin", "facs": ["Madelia (HOP)", "Minot", "Webster City"]},
@@ -25,7 +24,7 @@ LOCS = {
 
 def load_inv():
     files = [f for f in os.listdir('.') if 'inventory' in f.lower() and f.endswith('.csv')]
-    if not files: return pd.DataFrame(), "No inventory CSV found."
+    if not files: return pd.DataFrame(), "No inventory CSV found in folder."
     dfs = [pd.read_csv(f, encoding='latin1') for f in files]
     df = pd.concat(dfs, ignore_index=True)
     df.columns = [re.sub(r'[^a-zA-Z0-9_]', '', c) for c in df.columns]
@@ -45,25 +44,37 @@ def load_inv():
     df['Width'] = (df['W_mm']/25.4).round(1); df['Weight'] = (df['G']*0.61386).round(1)
     return df.dropna(subset=['Width','Weight','Price/lb']), "Success"
 
-# --- UI Setup ---
-st.set_page_config(layout="wide")
-user = st.sidebar.text_input("User Name:").strip().lower()
-if user not in AUTH: st.stop()
+st.set_page_config(page_title="Bid Tool", layout="wide")
 
-user_data = AUTH[user]
+# Restored explicit Unlock button to fix the "blank screen" issue
+user_input = st.sidebar.text_input("User Name:").strip().lower()
+st.sidebar.button("Unlock")
+
+if not user_input:
+    st.sidebar.info("Please enter your name and hit Unlock to begin.")
+    st.stop()
+
+if user_input not in AUTH:
+    st.sidebar.error(f"User '{user_input}' not found. Please check spelling.")
+    st.stop()
+
+user_data = AUTH[user_input]
 loc = st.sidebar.selectbox("Facility", user_data["facs"])
 rates = LOCS[loc]
 
 inv, msg = load_inv()
-if inv.empty: st.error(msg); st.stop()
+if inv.empty: 
+    st.error(msg)
+    st.stop()
 
 # --- Sidebar Inputs (Clean & Empty) ---
 st.sidebar.header("Job Specs")
 cust = st.sidebar.text_input("Customer", value="")
 job = st.sidebar.text_input("Job Name", value="")
 fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"])
+rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"])  # Restored!
 run = st.sidebar.number_input("Press Run", value=0, step=100)
-waste = st.sidebar.number_input("Waste", value=0)
+waste = st.sidebar.number_input("Waste Copies", value=0, step=50)
 t_pgs = st.sidebar.number_input("Total Pages", value=0)
 c_pgs = st.sidebar.number_input("Color Pages", value=0)
 
@@ -73,35 +84,38 @@ wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight']
 p_cost = inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10
 
 st.sidebar.header("Labor")
-cut = st.sidebar.number_input("Cut-Off", value=21.25)
+cut = st.sidebar.number_input("Press Cut-Off", value=21.25)
+cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.0))
 r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=0.0))
 mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.0))
-cp = apply_floor(st.sidebar.number_input("Plate Hours", value=0.0))
 p_ldrs = st.sidebar.number_input("Press Leaders", value=0)
 p_hlps = st.sidebar.number_input("Press Helpers", value=0)
 
 st.sidebar.subheader("Mailroom")
-ml_ldr = st.sidebar.number_input("Leaders", value=0)
-ml_lhrs = apply_floor(st.sidebar.number_input("Leader Hours", value=0.0))
-ml_hlp = st.sidebar.number_input("Helpers", value=0)
-ml_hhrs = apply_floor(st.sidebar.number_input("Helper Hours", value=0.0))
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=0)
+ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0))
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=0)
+ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0))
+
+if user_input == "boat hen": 
+    st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
 
 # --- Math Engine ---
 f_div = 2 if fmt=="Broadsheet" else (4 if fmt=="Tabloid" else 8)
-r_mult = 2 if fmt=="Book" else 1 # Simple fallback if you add run types later
+r_mult = 2 if rtype=="Straight" else 1
 
 tot_pl = 0
-tot_lbs = 0
 total_pages_printed = 0
+tot_lbs = 0
 
 if t_pgs > 0 and (run + waste) > 0:
-    tot_pl = (math.ceil(t_pgs/f_div)) + (math.ceil(c_pgs/f_div) * 3)
+    tot_pl = (math.ceil(t_pgs/f_div) * r_mult) + (math.ceil(c_pgs/f_div) * 3 * r_mult)
     total_pages_printed = (run + waste) * t_pgs
     tot_lbs = total_pages_printed / (1900000 / (sz * cut * wt))
 
 c_news = round_cents(tot_lbs * p_cost)
 c_ink = round_cents(total_pages_printed * rates["black_ink_cost_per_impression"])
-c_color_ink = round_cents((math.ceil(c_pgs/f_div)*3) * (run/1000) * rates["color_ink_cost_per_plate_m"]) if c_pgs > 0 and run > 0 else 0
+c_color_ink = round_cents(((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*rates["color_ink_cost_per_plate_m"])) if c_pgs > 0 and run > 0 else 0
 
 c_sub = round_cents(
     c_news + c_ink + c_color_ink +
@@ -118,11 +132,11 @@ c_sub = round_cents(
 t_cost = round_cents(c_sub * (1.0 + rates["overhead_pct"]))
 t_chg = round_cents(t_cost * (1.0 + rates["profit_margin"]))
 
-# --- Main Dashboard ---
+# --- Dashboard Display ---
 if cust == "" and job == "":
-    st.title("Bid Summary: New Job")
+    st.header("Bid Summary: New Job")
 else:
-    st.title(f"Bid Summary: {cust} - {job}")
+    st.header(f"Bid Summary: {cust} - {job}")
 
 c1, c2, c3 = st.columns(3)
 c1.metric("Paper", f"${c_news:.2f}")
@@ -134,7 +148,7 @@ b1, b2 = st.columns(2)
 b1.metric("Total Cost", f"${t_cost:.2f}")
 b2.metric("Total Charge", f"${t_chg:.2f}")
 
-st.success(f"Active Paper Rate: ${p_cost:.3f}/lb")
+st.success(f"Inventory Active: Billed at ${p_cost:.3f}/lb")
 
 # --- Save & View Logic ---
 st.divider()
@@ -144,7 +158,7 @@ if st.button("Save Quote"):
     else:
         new_q = {
             "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "User": user.title(),
+            "User": user_input.title(),
             "Customer": cust,
             "Job": job,
             "Facility": loc,
@@ -159,11 +173,10 @@ st.subheader("Saved Quotes")
 if os.path.exists("quotes.csv"):
     q_df = pd.read_csv("quotes.csv")
     if user_data["role"] == "user":
-        # Standard users only see their own quotes
-        q_df = q_df[q_df["User"].str.lower() == user]
+        q_df = q_df[q_df["User"].str.lower() == user_input]
     
     if not q_df.empty:
-        st.dataframe(q_df.iloc[::-1], use_container_width=True) # Shows newest at top
+        st.dataframe(q_df.iloc[::-1], use_container_width=True)
     else:
         st.info("No saved quotes found.")
 else:
