@@ -46,10 +46,9 @@ def load_inv():
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 
-# --- INVISIBLE SESSION LOCK (Fixes Blank Screen Bug) ---
+# --- INVISIBLE SESSION LOCK ---
 if 'unlocked' not in st.session_state: st.session_state.unlocked = False
 if 'current_user' not in st.session_state: st.session_state.current_user = ""
-if 'reset_key' not in st.session_state: st.session_state.reset_key = 0
 
 user_input = st.sidebar.text_input("User Name:", value=st.session_state.current_user).strip().lower()
 
@@ -67,49 +66,49 @@ if active_user not in AUTH:
     st.sidebar.error("User not found. Please check spelling.")
     st.stop()
 
-# --- START NEW BID LOGIC (Bulletproof Reset) ---
-def start_new_bid():
-    st.session_state.reset_key += 1 # Forces all widgets to instantly clear
+if st.sidebar.button("Lock / Logout"):
+    st.session_state.unlocked = False
+    st.session_state.current_user = ""
+    st.rerun()
 
-st.sidebar.button("Start New Bid", on_click=start_new_bid, type="primary")
-rk = st.session_state.reset_key # Key suffix for blanking widgets
+st.sidebar.divider()
 
 user_data = AUTH[active_user]
-loc = st.sidebar.selectbox("Facility", user_data["facs"], key=f"loc_{rk}")
+loc = st.sidebar.selectbox("Facility", user_data["facs"])
 rates = LOCS[loc]
 
 inv, msg = load_inv()
 if inv.empty: st.error(msg); st.stop()
 
-# --- Sidebar Inputs (Clean & Empty Defaults) ---
+# --- Sidebar Inputs ---
 st.sidebar.header("Job Specs")
-cust = st.sidebar.text_input("Customer", value="", key=f"cust_{rk}")
-job = st.sidebar.text_input("Job Name", value="", key=f"job_{rk}")
-fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"], key=f"fmt_{rk}")
-rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"], key=f"rtype_{rk}")
-run = st.sidebar.number_input("Press Run", value=0, step=100, key=f"run_{rk}")
-waste = st.sidebar.number_input("Waste Copies", value=0, step=50, key=f"waste_{rk}")
-t_pgs = st.sidebar.number_input("Total Pages", value=0, key=f"t_pgs_{rk}")
-c_pgs = st.sidebar.number_input("Color Pages", value=0, key=f"c_pgs_{rk}")
+cust = st.sidebar.text_input("Customer", value="")
+job = st.sidebar.text_input("Job Name", value="")
+fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"])
+rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"])
+run = st.sidebar.number_input("Press Run", value=0, step=100)
+waste = st.sidebar.number_input("Waste Copies", value=0, step=50)
+t_pgs = st.sidebar.number_input("Total Pages", value=0)
+c_pgs = st.sidebar.number_input("Color Pages", value=0)
 
 st.sidebar.header("Paper")
-sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()), key=f"sz_{rk}")
-wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()), key=f"wt_{rk}")
+sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
+wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
 p_cost = inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10
 
 st.sidebar.header("Labor")
-cut = st.sidebar.number_input("Press Cut-Off", value=21.25, key=f"cut_{rk}")
-cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.0, key=f"cp_{rk}"))
-r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=0.0, key=f"r_hrs_{rk}"))
-mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.0, key=f"mr_{rk}"))
-p_ldrs = st.sidebar.number_input("Press Leaders", value=0, key=f"p_ldrs_{rk}")
-p_hlps = st.sidebar.number_input("Press Helpers", value=0, key=f"p_hlps_{rk}")
+cut = st.sidebar.number_input("Press Cut-Off", value=21.25)
+cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.0))
+r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=0.0))
+mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.0))
+p_ldrs = st.sidebar.number_input("Press Leaders", value=0)
+p_hlps = st.sidebar.number_input("Press Helpers", value=0)
 
 st.sidebar.subheader("Mailroom")
-ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=0, key=f"ml_ldr_{rk}")
-ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0, key=f"ml_lhrs_{rk}"))
-ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=0, key=f"ml_hlp_{rk}")
-ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0, key=f"ml_hhrs_{rk}"))
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=0)
+ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0))
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=0)
+ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0))
 
 if active_user == "boat hen": 
     st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
@@ -181,7 +180,7 @@ if st.button("Save Quote"):
         }
         f_exists = os.path.isfile("quotes.csv")
         pd.DataFrame([new_q]).to_csv("quotes.csv", mode='a', header=not f_exists, index=False)
-        st.success(f"Quote for {cust} saved successfully! Click 'Start New Bid' to clear the board.")
+        st.success(f"Quote for {cust} saved successfully!")
 
 st.subheader("Saved Quotes")
 if os.path.exists("quotes.csv"):
