@@ -4,16 +4,18 @@ def round_cents(val): return round(val + 1e-9, 2)
 def floor_to_one(val): return max(1.0, float(val))
 
 AUTH = {
-    "bob patchen":["Madelia (HOP)", "Minot"], 
-    "boat hen":["Madelia (HOP)", "Minot"], 
-    "mike christman":["Madelia (HOP)", "Minot"], 
+    "bob patchen":["Madelia (HOP)", "Minot", "Webster City"], 
+    "boat hen":["Madelia (HOP)", "Minot", "Webster City"], 
+    "mike christman":["Madelia (HOP)", "Minot", "Webster City"], 
     "brenda ahern":["Madelia (HOP)", "Minot"], 
-    "terry saar":["Madelia (HOP)", "Minot"]
+    "terry saar":["Madelia (HOP)", "Minot"],
+    "grant gibbons":["Webster City"]
 }
 
 LOCS = {
     "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0},
-    "Minot": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":31.34,"press_helper_rate":22.43,"camera_plate_rate":30.0,"make_ready_rate":31.34,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":24.11,"mailroom_helper_rate":16.15}
+    "Minot": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":31.34,"press_helper_rate":22.43,"camera_plate_rate":30.0,"make_ready_rate":31.34,"press_overhead_maint_pct":0.10,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":24.11,"mailroom_helper_rate":16.15},
+    "Webster City": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":38.95,"press_helper_rate":29.26,"camera_plate_rate":21.45,"make_ready_rate":38.95,"press_overhead_maint_pct":0.16,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":36.63,"mailroom_helper_rate":20.89}
 }
 
 def load_inv():
@@ -67,7 +69,6 @@ p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mea
 st.sidebar.success(f"Inventory Active: ${p_cost:.3f}/lb")
 
 cut = st.sidebar.number_input("Press Cut-Off", 21.25)
-# Time-based entries with automatic 1-hour floor
 cp = floor_to_one(st.sidebar.number_input("Pre-Press Plate Hours", 0.5))
 r_hrs = floor_to_one(st.sidebar.number_input("Press Run Hours", 1.0))
 mr = floor_to_one(st.sidebar.number_input("Make-Ready Hours", 0.5))
@@ -88,14 +89,15 @@ tot_pl = (math.ceil(t_pgs/f_div) * r_mult) + (math.ceil(c_pgs/f_div) * 3 * r_mul
 total_pages_printed = (run + waste) * t_pgs
 tot_lbs = total_pages_printed / (1900000 / (sz * cut * wt))
 c_news = round_cents(tot_lbs * p_cost)
-c_ink = round_cents(total_pages_printed * 0.0006)
-c_sub = round_cents(c_news + c_ink + (p_ldrs*rates["press_leader_rate"]*r_hrs) + (p_hlps*rates["press_helper_rate"]*r_hrs) + (mr*rates["make_ready_rate"]) + (tot_pl*5.25) + (tot_pl*0.75) + (cp*rates["camera_plate_rate"]) + ((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95) + (ml_ldr*ml_lhrs*rates["mailroom_leader_rate"] + ml_hlp*ml_hhrs*rates["mailroom_helper_rate"]))
-t_cost = round_cents(c_sub * 1.26)
-t_chg = round_cents(t_cost * 1.25)
+c_ink = round_cents(total_pages_printed * rates["black_ink_cost_per_impression"])
+c_sub = round_cents(c_news + c_ink + (p_ldrs*rates["press_leader_rate"]*r_hrs) + (p_hlps*rates["press_helper_rate"]*r_hrs) + (mr*rates["make_ready_rate"]) + (tot_pl*rates["plate_cost"]) + (tot_pl*rates["plate_overhead_maint"]) + (cp*rates["camera_plate_rate"]) + ((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*rates["color_ink_cost_per_plate_m"]) + (ml_ldr*ml_lhrs*rates["mailroom_leader_rate"] + ml_hlp*ml_hhrs*rates["mailroom_helper_rate"]))
+
+t_cost = round_cents(c_sub * (1.0 + rates["overhead_pct"]))
+t_chg = round_cents(t_cost * (1.0 + rates["profit_margin"]))
 
 st.header(f"Bid Summary: {cust} - {desc}")
 c1, c2, c3 = st.columns(3)
-c1.metric("Paper", f"${c_news:.2f}"); c2.metric("Labor", f"${(c_sub-c_news-c_ink-(tot_pl*5.25)-(tot_pl*0.75)-((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}"); c3.metric("Ink/Plates", f"${(c_ink+(tot_pl*5.25)+(tot_pl*0.75)+(cp*rates['camera_plate_rate'])+((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*0.95)):.2f}")
+c1.metric("Paper", f"${c_news:.2f}"); c2.metric("Labor", f"${(c_sub-c_news-c_ink-(tot_pl*rates['plate_cost'])-(tot_pl*rates['plate_overhead_maint'])-((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*rates['color_ink_cost_per_plate_m'])):.2f}"); c3.metric("Ink/Plates", f"${(c_ink+(tot_pl*rates['plate_cost'])+(tot_pl*rates['plate_overhead_maint'])+(cp*rates['camera_plate_rate'])+((math.ceil(c_pgs/f_div)*3*r_mult)*(run/1000)*rates['color_ink_cost_per_plate_m'])):.2f}")
 st.divider()
 b1, b2 = st.columns(2)
 b1.metric("Total Cost", f"${t_cost:.2f}"); b2.metric("Total Charge", f"${t_chg:.2f}")
