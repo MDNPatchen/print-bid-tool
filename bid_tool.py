@@ -1,6 +1,7 @@
 import streamlit as st, pandas as pd, math, re, os, csv
 
 def round_cents(val): return round(val + 1e-9, 2)
+def floor_to_one(val): return max(1.0, float(val))
 
 AUTH = {
     "bob patchen":["Madelia (HOP)", "Minot"], 
@@ -29,9 +30,10 @@ def load_inv():
     if not dfs: return pd.DataFrame(), "No valid data."
     df = pd.concat(dfs, ignore_index=True)
     df.columns = [re.sub(r'[^a-zA-Z0-9_]', '', c) for c in df.columns]
-    def find_col(k): return next((c for c in df.columns if k.lower() in c.lower()), None)
     
+    def find_col(k): return next((c for c in df.columns if k.lower() in c.lower()), None)
     p_c, n_c, w_c, g_c = find_col('Price'), find_col('NetPrice'), find_col('RollWidth'), find_col('Grammage')
+    
     def ext(v):
         m = re.search(r'[\d\.]+', str(v))
         return float(m.group()) if m and not pd.isna(v) else None
@@ -65,13 +67,18 @@ p_cost = round_cents(inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mea
 st.sidebar.success(f"Inventory Active: ${p_cost:.3f}/lb")
 
 cut = st.sidebar.number_input("Press Cut-Off", 21.25)
-cp, r_hrs, p_ldrs, p_hlps, mr = st.sidebar.number_input("Plate Hrs", 0.5), st.sidebar.number_input("Run Hrs", 1.0), st.sidebar.number_input("Press Leaders", 1), st.sidebar.number_input("Press Helpers", 2), st.sidebar.number_input("Make-Ready Hours", 0.5)
+# Time-based entries with automatic 1-hour floor
+cp = floor_to_one(st.sidebar.number_input("Pre-Press Plate Hours", 0.5))
+r_hrs = floor_to_one(st.sidebar.number_input("Press Run Hours", 1.0))
+mr = floor_to_one(st.sidebar.number_input("Make-Ready Hours", 0.5))
+p_ldrs = st.sidebar.number_input("Press Leaders", 1)
+p_hlps = st.sidebar.number_input("Press Helpers", 2)
 
-st.sidebar.subheader("Mailroom")
+st.sidebar.subheader("Mailroom Labor")
 ml_ldr = st.sidebar.number_input("Mailroom Leaders", 1)
-ml_lhrs = st.sidebar.number_input("Mailroom Leader Hours", 0.0)
+ml_lhrs = floor_to_one(st.sidebar.number_input("Mailroom Leader Hours", 0.0))
 ml_hlp = st.sidebar.number_input("Mailroom Helpers", 3)
-ml_hhrs = st.sidebar.number_input("Mailroom Helper Hours", 0.0)
+ml_hhrs = floor_to_one(st.sidebar.number_input("Mailroom Helper Hours", 0.0))
 
 if user == "boat hen": st.sidebar.markdown("<div style='text-align:center;margin-top:70px;opacity:0.35;'><div style='font-family:Georgia,serif;font-size:34px;'>B <i>&</i> H</div><div style='font-size:9px;letter-spacing:6px;border-top:1px solid #bdc3c7;display:inline-block;'>PRINT WORKS</div></div>", unsafe_allow_html=True)
 
