@@ -94,11 +94,12 @@ def load_inv():
     all_f = os.listdir('.')
     files = []
     for f in all_f:
-        if 'inventory' in f.lower() and f.endswith('.csv'):
-            files.append(f)
-            
+        if 'inventory' in f.lower():
+            if f.endswith('.csv'):
+                files.append(f)
+                
     if not files: 
-        return pd.DataFrame(), "No inventory CSV found."
+        return pd.DataFrame(), "No inventory CSV."
     
     dfs = []
     for target in files:
@@ -120,7 +121,7 @@ def load_inv():
             continue
 
     if not dfs: 
-        return pd.DataFrame(), "Could not parse inventory files."
+        return pd.DataFrame(), "Could not parse inventory."
     
     df = pd.concat(dfs, ignore_index=True)
     
@@ -156,16 +157,16 @@ def load_inv():
             return row['Net']
         return row['P']
 
-    df['Price_Final'] = df.apply(get_final, axis=1)
-    df = df.dropna(subset=['Price_Final','W_mm','G'])
+    df['P_Fin'] = df.apply(get_final, axis=1)
+    df = df.dropna(subset=['P_Fin','W_mm','G'])
 
     if df.empty: 
-        return df, "No valid prices or widths."
+        return df, "No valid prices."
 
     def calc_lb(x):
         return round(x + 1e-9, 2)
 
-    df['Price/lb'] = (df['Price_Final']/2204.62).apply(calc_lb)
+    df['Price/lb'] = (df['P_Fin']/2204.62).apply(calc_lb)
     df['Width'] = (df['W_mm']/25.4).round(1)
     df['Weight'] = (df['G']*0.61386).round(1)
     
@@ -214,13 +215,150 @@ sz = st.sidebar.selectbox("Web Width", w_list)
 wt_list = sorted(inv[inv['Width']==sz]['Weight'].unique())
 wt = st.sidebar.selectbox("Basis Weight", wt_list)
 
-filtered_inv = inv[(inv['Width']==sz) & (inv['Weight']==wt)]
-p_cost = filtered_inv['Price/lb'].mean() * 1.10
+filt_inv = inv[(inv['Width']==sz) & (inv['Weight']==wt)]
+p_cost = filt_inv['Price/lb'].mean() * 1.10
 
 st.sidebar.header("Labor")
 cut = st.sidebar.number_input("Press Cut-Off", value=21.25)
 
-raw_cp = st.sidebar.number_input("Plate Hrs", value=0.5)
-cp = apply_floor(raw_cp)
+cp_in = st.sidebar.number_input("Plate Hrs", value=0.5)
+cp = apply_floor(cp_in)
 
-raw
+r_in = st.sidebar.number_input("Run Hrs", value=1.0)
+r_hrs = apply_floor(r_in)
+
+mr_in = st.sidebar.number_input("Make-Ready Hrs", value=0.5)
+mr = apply_floor(mr_in)
+
+p_ldrs = st.sidebar.number_input("Press Leaders", value=1)
+p_hlps = st.sidebar.number_input("Press Helpers", value=2)
+
+st.sidebar.subheader("Mailroom")
+ml_ldr = st.sidebar.number_input("Mail Leaders", value=1)
+
+ml_l_in = st.sidebar.number_input("Mail L-Hrs", value=0.0)
+ml_lhrs = apply_floor(ml_l_in)
+
+ml_hlp = st.sidebar.number_input("Mail Helpers", value=3)
+
+ml_h_in = st.sidebar.number_input("Mail H-Hrs", value=0.0)
+ml_hhrs = apply_floor(ml_h_in)
+
+bh_1 = "<div style='text-align:center;margin-top:70px;"
+bh_2 = "opacity:0.35;'><div style='font-family:Georgia,serif;"
+bh_3 = "font-size:34px;'>B <i>&</i> H</div>"
+bh_4 = "<div style='font-size:9px;letter-spacing:6px;"
+bh_5 = "border-top:1px solid #bdc3c7;display:inline-block;'>"
+bh_6 = "PRINT WORKS</div></div>"
+bh_logo = bh_1 + bh_2 + bh_3 + bh_4 + bh_5 + bh_6
+
+if user == "boat hen": 
+    st.sidebar.markdown(bh_logo, unsafe_allow_html=True)
+
+f_div = 2 if fmt=="Broadsheet" else (4 if fmt=="Tabloid" else 8)
+r_mult = 2 if rtype=="Straight" else 1
+
+bw_pl = math.ceil(t_pgs / f_div) * r_mult
+col_pl = math.ceil(c_pgs / f_div) * 3 * r_mult
+tot_pl = bw_pl + col_pl
+
+total_pgs = (run + waste) * t_pgs
+
+tot_lbs = 0
+if sz > 0 and cut > 0 and wt > 0:
+    y_factor = 1900000 / (sz * cut * wt)
+    tot_lbs = total_pgs / y_factor
+
+c_news = round_cents(tot_lbs * p_cost)
+ink_rate = rates["black_ink_cost_per_impression"]
+c_ink = round_cents(total_pgs * ink_rate)
+
+c_col_ink = 0.0
+if c_pgs > 0 and run > 0:
+    c_rate = rates["color_ink_cost_per_plate_m"]
+    c_col_ink = round_cents(col_pl * (run / 1000) * c_rate)
+
+lab_p_ldr = p_ldrs * rates["press_leader_rate"] * r_hrs
+lab_p_hlp = p_hlps * rates["press_helper_rate"] * r_hrs
+lab_mr = mr * rates["make_ready_rate"]
+
+pl_cost = tot_pl * rates["plate_cost"]
+pl_maint = tot_pl * rates["plate_overhead_maint"]
+
+lab_cam = cp * rates["camera_plate_rate"]
+
+lab_m_ldr = ml_ldr * ml_lhrs * rates["mailroom_leader_rate"]
+lab_m_hlp = ml_hlp * ml_hhrs * rates["mailroom_helper_rate"]
+
+c_sub_r = c_news + c_ink + c_col_ink + lab_p_ldr + lab_p_hlp
+c_sub_r += lab_mr + pl_cost + pl_maint + lab_cam
+c_sub_r += lab_m_ldr + lab_m_hlp
+
+c_sub = round_cents(c_sub_r)
+
+cost_mult = 1.0 + rates["overhead_pct"]
+t_cost = round_cents(c_sub * cost_mult)
+
+chg_mult = 1.0 + rates["profit_margin"]
+t_chg = round_cents(t_cost * chg_mult)
+
+st.header(f"Bid Summary: {cust} - {job}")
+
+lab_tot = c_sub - c_news - c_ink - c_col_ink - pl_cost - pl_maint
+ink_pl_tot = c_ink + c_col_ink + pl_cost + pl_maint + lab_cam
+
+c1, c2, c3 = st.columns(3)
+c1.metric("Paper", f"${c_news:.2f}")
+c2.metric("Labor", f"${lab_tot:.2f}")
+c3.metric("Ink/Plates", f"${ink_pl_tot:.2f}")
+
+st.divider()
+b1, b2 = st.columns(2)
+b1.metric("Total Cost", f"${t_cost:.2f}")
+b2.metric("Total Charge", f"${t_chg:.2f}")
+
+msg_inv = f"Inventory Linked: Billed at ${p_cost:.3f}/lb"
+st.success(msg_inv)
+
+st.write("") 
+btn_save = st.button("Save Quote", type="primary")
+
+if btn_save:
+    if cust and job:
+        t_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        new_q = {
+            "Date": t_str, 
+            "User": user.title(), 
+            "Customer": cust, 
+            "Job": job, 
+            "Facility": loc,
+            "Total Cost": f"${t_cost:.2f}", 
+            "Total Charge": f"${t_chg:.2f}"
+        }
+        f_exists = os.path.exists("quotes.csv")
+        df_new = pd.DataFrame([new_q])
+        df_new.to_csv("quotes.csv", mode='a', header=not f_exists, index=False)
+        
+        s_msg1 = f"Quote for {cust} saved. "
+        s_msg2 = "Hit refresh to clear the board."
+        st.success(s_msg1 + s_msg2)
+    else:
+        st.error("Need a Customer and Job Name.")
+
+st.divider()
+st.subheader("Saved Quotes")
+if os.path.exists("quotes.csv"):
+    try:
+        history = pd.read_csv("quotes.csv")
+        if user_data["role"] == "user":
+            is_user = history["User"].str.lower() == user.lower()
+            history = history[is_user]
+        
+        if not history.empty:
+            st.dataframe(history.iloc[::-1], use_container_width=True)
+        else:
+            st.info("Your filing cabinet is empty.")
+    except:
+        st.info("No quotes have been saved yet.")
+else:
+    st.info("No quotes have been saved in the system yet.")
