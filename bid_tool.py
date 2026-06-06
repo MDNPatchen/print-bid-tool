@@ -94,10 +94,9 @@ def load_inv():
     all_f = os.listdir('.')
     files = []
     for f in all_f:
-        if 'inventory' in f.lower():
-            if f.endswith('.csv'):
-                files.append(f)
-                
+        if 'inventory' in f.lower() and f.endswith('.csv'):
+            files.append(f)
+            
     if not files: 
         return pd.DataFrame(), "No inventory CSV found."
     
@@ -218,8 +217,8 @@ wt = st.sidebar.selectbox("Basis Weight", wt_list)
 filt_inv = inv[(inv['Width']==sz) & (inv['Weight']==wt)]
 p_cost = filt_inv['Price/lb'].mean() * 1.10
 
-# Moved the inventory rate success message back to the sidebar
-msg_inv = f"Inventory Active: Billed at ${p_cost:.3f}/lb"
+str_rate = "{:.3f}".format(p_cost)
+msg_inv = "Inventory Active: Billed at $" + str_rate + "/lb"
 st.sidebar.success(msg_inv)
 
 st.sidebar.header("Labor")
@@ -249,61 +248,4 @@ ml_h_in = st.sidebar.number_input("Mailroom Helper Hours", value=0.0)
 ml_hhrs = apply_floor(ml_h_in)
 
 bh_1 = "<div style='text-align:center;margin-top:70px;"
-bh_2 = "opacity:0.35;'><div style='font-family:Georgia,serif;"
-bh_3 = "font-size:34px;'>B <i>&</i> H</div>"
-bh_4 = "<div style='font-size:9px;letter-spacing:6px;"
-bh_5 = "border-top:1px solid #bdc3c7;display:inline-block;'>"
-bh_6 = "PRINT WORKS</div></div>"
-bh_logo = bh_1 + bh_2 + bh_3 + bh_4 + bh_5 + bh_6
-
-if user == "boat hen": 
-    st.sidebar.markdown(bh_logo, unsafe_allow_html=True)
-
-f_div = 2 if fmt=="Broadsheet" else (4 if fmt=="Tabloid" else 8)
-r_mult = 2 if rtype=="Straight" else 1
-
-bw_pl = math.ceil(t_pgs / f_div) * r_mult
-col_pl = math.ceil(c_pgs / f_div) * 3 * r_mult
-tot_pl = bw_pl + col_pl
-
-total_pgs = (run + waste) * t_pgs
-
-tot_lbs = 0
-if sz > 0 and cut > 0 and wt > 0:
-    y_factor = 1900000 / (sz * cut * wt)
-    tot_lbs = total_pgs / y_factor
-
-c_news = round_cents(tot_lbs * p_cost)
-ink_rate = rates["black_ink_cost_per_impression"]
-c_ink = round_cents(total_pgs * ink_rate)
-
-c_col_ink = 0.0
-if c_pgs > 0 and run > 0:
-    c_rate = rates["color_ink_cost_per_plate_m"]
-    c_col_ink = round_cents(col_pl * (run / 1000) * c_rate)
-
-lab_p_ldr = p_ldrs * rates["press_leader_rate"] * r_hrs
-lab_p_hlp = p_hlps * rates["press_helper_rate"] * r_hrs
-lab_mr = mr * rates["make_ready_rate"]
-
-pl_cost = tot_pl * rates["plate_cost"]
-pl_maint = tot_pl * rates["plate_overhead_maint"]
-
-lab_cam = cp * rates["camera_plate_rate"]
-
-lab_m_ldr = ml_ldr * ml_lhrs * rates["mailroom_leader_rate"]
-lab_m_hlp = ml_hlp * ml_hhrs * rates["mailroom_helper_rate"]
-
-c_sub_r = c_news + c_ink + c_col_ink + lab_p_ldr + lab_p_hlp
-c_sub_r += lab_mr + pl_cost + pl_maint + lab_cam
-c_sub_r += lab_m_ldr + lab_m_hlp
-
-c_sub = round_cents(c_sub_r)
-
-cost_mult = 1.0 + rates["overhead_pct"]
-t_cost = round_cents(c_sub * cost_mult)
-
-chg_mult = 1.0 + rates["profit_margin"]
-t_chg = round_cents(t_cost * chg_mult)
-
-st.header
+bh_2 = "opacity:0.35
