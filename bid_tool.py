@@ -247,5 +247,118 @@ ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=3)
 ml_h_in = st.sidebar.number_input("Mailroom Helper Hours", value=0.0)
 ml_hhrs = apply_floor(ml_h_in)
 
-bh_1 = "<div style='text-align:center;margin-top:70px;"
-bh_2 = "opacity:0.35
+f_div = 2 if fmt=="Broadsheet" else (4 if fmt=="Tabloid" else 8)
+r_mult = 2 if rtype=="Straight" else 1
+
+bw_pl = math.ceil(t_pgs / f_div) * r_mult
+col_pl = math.ceil(c_pgs / f_div) * 3 * r_mult
+tot_pl = bw_pl + col_pl
+
+total_pgs = (run + waste) * t_pgs
+
+tot_lbs = 0
+if sz > 0 and cut > 0 and wt > 0:
+    y_factor = 1900000 / (sz * cut * wt)
+    tot_lbs = total_pgs / y_factor
+
+c_news = round_cents(tot_lbs * p_cost)
+ink_rate = rates["black_ink_cost_per_impression"]
+c_ink = round_cents(total_pgs * ink_rate)
+
+c_col_ink = 0.0
+if c_pgs > 0 and run > 0:
+    c_rate = rates["color_ink_cost_per_plate_m"]
+    c_col_ink = round_cents(col_pl * (run / 1000) * c_rate)
+
+lab_p_ldr = p_ldrs * rates["press_leader_rate"] * r_hrs
+lab_p_hlp = p_hlps * rates["press_helper_rate"] * r_hrs
+lab_mr = mr * rates["make_ready_rate"]
+
+pl_cost = tot_pl * rates["plate_cost"]
+pl_maint = tot_pl * rates["plate_overhead_maint"]
+
+lab_cam = cp * rates["camera_plate_rate"]
+
+lab_m_ldr = ml_ldr * ml_lhrs * rates["mailroom_leader_rate"]
+lab_m_hlp = ml_hlp * ml_hhrs * rates["mailroom_helper_rate"]
+
+c_sub_r = c_news + c_ink + c_col_ink + lab_p_ldr + lab_p_hlp
+c_sub_r += lab_mr + pl_cost + pl_maint + lab_cam
+c_sub_r += lab_m_ldr + lab_m_hlp
+
+c_sub = round_cents(c_sub_r)
+
+cost_mult = 1.0 + rates["overhead_pct"]
+t_cost = round_cents(c_sub * cost_mult)
+
+chg_mult = 1.0 + rates["profit_margin"]
+t_chg = round_cents(t_cost * chg_mult)
+
+head_txt = "Bid Summary: " + str(cust) + " - " + str(job)
+st.header(head_txt)
+
+lab_tot = c_sub - c_news - c_ink - c_col_ink - pl_cost - pl_maint
+ink_pl_tot = c_ink + c_col_ink + pl_cost + pl_maint + lab_cam
+
+c1, c2, c3 = st.columns(3)
+
+pap_str = "$" + "{:.2f}".format(c_news)
+c1.metric("Paper", pap_str)
+
+lab_str = "$" + "{:.2f}".format(lab_tot)
+c2.metric("Labor", lab_str)
+
+ink_str = "$" + "{:.2f}".format(ink_pl_tot)
+c3.metric("Ink/Plates", ink_str)
+
+st.divider()
+b1, b2 = st.columns(2)
+
+t_c_str = "$" + "{:.2f}".format(t_cost)
+b1.metric("Total Cost", t_c_str)
+
+t_ch_str = "$" + "{:.2f}".format(t_chg)
+b2.metric("Total Charge", t_ch_str)
+
+st.write("") 
+btn_save = st.button("Save Quote", type="primary")
+
+if btn_save:
+    if cust and job:
+        time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        new_q = {
+            "Date": time_str, 
+            "User": user.title(), 
+            "Customer": cust, 
+            "Job": job, 
+            "Facility": loc,
+            "Total Cost": t_c_str, 
+            "Total Charge": t_ch_str
+        }
+        f_exists = os.path.exists("quotes.csv")
+        df_new = pd.DataFrame([new_q])
+        df_new.to_csv("quotes.csv", mode='a', header=not f_exists, index=False)
+        
+        s_msg1 = "Quote for " + str(cust) + " saved. "
+        s_msg2 = "Hit refresh to clear the board."
+        st.success(s_msg1 + s_msg2)
+    else:
+        st.error("Need a Customer and Job Name.")
+
+st.divider()
+st.subheader("Saved Quotes")
+if os.path.exists("quotes.csv"):
+    try:
+        history = pd.read_csv("quotes.csv")
+        if user_data["role"] == "user":
+            is_user = history["User"].str.lower() == user.lower()
+            history = history[is_user]
+        
+        if not history.empty:
+            st.dataframe(history.iloc[::-1], use_container_width=True)
+        else:
+            st.info("Your filing cabinet is empty.")
+    except:
+        st.info("No quotes have been saved yet.")
+else:
+    st.info("No quotes have been saved in the system yet.")
