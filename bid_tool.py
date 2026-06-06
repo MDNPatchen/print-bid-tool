@@ -2,12 +2,10 @@ import streamlit as st, pandas as pd, math, re, os, csv, datetime
 
 def round_cents(val): return round(val + 1e-9, 2)
 
-# Floor logic: If they leave it at 0, it stays 0. If it's 0.1 to 0.99, it bumps to 1.0.
 def apply_floor(val): 
     v = float(val)
     return 1.0 if 0 < v < 1.0 else v
 
-# Dictionary with RBAC (Role-Based Access Control)
 AUTH = {
     "bob patchen": {"role": "admin", "facs": ["Madelia (HOP)", "Minot", "Webster City"]},
     "mike christman": {"role": "admin", "facs": ["Madelia (HOP)", "Minot", "Webster City"]},
@@ -30,7 +28,6 @@ def load_inv():
     dfs = []
     for target in files:
         try:
-            # This is the crucial part I accidentally deleted earlier. It skips the mill's junk header.
             with open(target, 'r', encoding='latin1', errors='replace') as f: data = list(csv.reader(f))
             h_idx = next((i for i, r in enumerate(data) if r and 'Ownership' in str(r[0])), -1)
             if h_idx == -1: continue
@@ -55,7 +52,6 @@ def load_inv():
     df['W_mm'] = df[w_col].apply(ext) if w_col else None
     df['G'] = df[g_col].apply(ext) if g_col else None
 
-    # Safety catch so the math engine doesn't crash on empty cells
     df['Price_Final'] = df['Net'].apply(lambda x: x if x and x > 0 else None).fillna(df['P'])
     df = df.dropna(subset=['Price_Final','W_mm','G'])
 
@@ -63,4 +59,55 @@ def load_inv():
 
     df['Price/lb'] = (df['Price_Final']/2204.62).apply(lambda x: round(x+1e-9, 2))
     df['Width'] = (df['W_mm']/25.4).round(1)
-    df['Weight'] = (df
+    df['Weight'] = (df['G']*0.61386).round(1)
+    return df.dropna(subset=['Width','Weight','Price/lb']), "Success"
+
+st.set_page_config(page_title="Bid Tool", layout="wide")
+
+user = st.sidebar.text_input("User Name:").strip().lower()
+st.sidebar.button("Unlock")
+
+if not user or user not in AUTH: 
+    if user: st.sidebar.error("User not found. Please check spelling.")
+    st.stop()
+
+user_data = AUTH[user]
+loc = st.sidebar.selectbox("Facility", user_data["facs"])
+rates = LOCS[loc]
+
+inv, msg = load_inv()
+if inv.empty: 
+    st.error(msg)
+    st.stop()
+
+st.sidebar.header("Job Specs")
+cust = st.sidebar.text_input("Customer", value="Mantako")
+job = st.sidebar.text_input("Job Name", value="Free Press")
+fmt = st.sidebar.selectbox("Format", ["Broadsheet", "Tabloid", "Book"])
+rtype = st.sidebar.selectbox("Run Type", ["Collect", "Straight"])
+run = st.sidebar.number_input("Press Run", value=5890, step=100)
+waste = st.sidebar.number_input("Waste Copies", value=589, step=50)
+t_pgs = st.sidebar.number_input("Total Pages", value=20)
+c_pgs = st.sidebar.number_input("Color Pages", value=4)
+
+st.sidebar.header("Paper")
+sz = st.sidebar.selectbox("Web Width", sorted(inv['Width'].unique()))
+wt = st.sidebar.selectbox("Basis Weight", sorted(inv[inv['Width']==sz]['Weight'].unique()))
+p_cost = inv[(inv['Width']==sz)&(inv['Weight']==wt)]['Price/lb'].mean() * 1.10
+
+st.sidebar.header("Labor")
+cut = st.sidebar.number_input("Press Cut-Off", value=21.25)
+cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.5))
+r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=1.0))
+mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.5))
+p_ldrs = st.sidebar.number_input("Press Leaders", value=1)
+p_hlps = st.sidebar.number_input("Press Helpers", value=2)
+
+st.sidebar.subheader("Mailroom")
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=1)
+ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0))
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=3)
+ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0))
+
+if user == "boat hen": 
+    st.sidebar.markdown("<div
