@@ -2,10 +2,12 @@ import streamlit as st, pandas as pd, math, re, os, csv, datetime
 
 def round_cents(val): return round(val + 1e-9, 2)
 
+# Floor logic: If they leave it at 0, it stays 0. If it's 0.1 to 0.99, it bumps to 1.0.
 def apply_floor(val): 
     v = float(val)
     return 1.0 if 0 < v < 1.0 else v
 
+# Dictionary with RBAC (Role-Based Access Control)
 AUTH = {
     "bob patchen": {"role": "admin", "facs": ["Madelia (HOP)", "Minot", "Webster City"]},
     "mike christman": {"role": "admin", "facs": ["Madelia (HOP)", "Minot", "Webster City"]},
@@ -16,9 +18,24 @@ AUTH = {
 }
 
 LOCS = {
-    "Madelia (HOP)": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":30.0,"press_helper_rate":25.0,"camera_plate_rate":30.0,"make_ready_rate":30.0,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":30.0,"mailroom_helper_rate":25.0},
-    "Minot": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":31.34,"press_helper_rate":22.43,"camera_plate_rate":30.0,"make_ready_rate":31.34,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":24.11,"mailroom_helper_rate":16.15},
-    "Webster City": {"profit_margin":0.25,"overhead_pct":0.26,"newsprint_cost_per_lb":0.35,"black_ink_cost_per_impression":0.0006,"press_leader_rate":38.95,"press_helper_rate":29.26,"camera_plate_rate":21.45,"make_ready_rate":38.95,"plate_cost":5.25,"plate_overhead_maint":0.75,"color_ink_cost_per_plate_m":0.95,"mailroom_leader_rate":36.63,"mailroom_helper_rate":20.89}
+    "Madelia (HOP)": {
+        "profit_margin":0.25, "overhead_pct":0.26, "newsprint_cost_per_lb":0.35, "black_ink_cost_per_impression":0.0006, 
+        "press_leader_rate":30.0, "press_helper_rate":25.0, "camera_plate_rate":30.0, "make_ready_rate":30.0, 
+        "plate_cost":5.25, "plate_overhead_maint":0.75, "color_ink_cost_per_plate_m":0.95, 
+        "mailroom_leader_rate":30.0, "mailroom_helper_rate":25.0
+    },
+    "Minot": {
+        "profit_margin":0.25, "overhead_pct":0.26, "newsprint_cost_per_lb":0.35, "black_ink_cost_per_impression":0.0006, 
+        "press_leader_rate":31.34, "press_helper_rate":22.43, "camera_plate_rate":30.0, "make_ready_rate":31.34, 
+        "plate_cost":5.25, "plate_overhead_maint":0.75, "color_ink_cost_per_plate_m":0.95, 
+        "mailroom_leader_rate":24.11, "mailroom_helper_rate":16.15
+    },
+    "Webster City": {
+        "profit_margin":0.25, "overhead_pct":0.26, "newsprint_cost_per_lb":0.35, "black_ink_cost_per_impression":0.0006, 
+        "press_leader_rate":38.95, "press_helper_rate":29.26, "camera_plate_rate":21.45, "make_ready_rate":38.95, 
+        "plate_cost":5.25, "plate_overhead_maint":0.75, "color_ink_cost_per_plate_m":0.95, 
+        "mailroom_leader_rate":36.63, "mailroom_helper_rate":20.89
+    }
 }
 
 def load_inv():
@@ -64,6 +81,7 @@ def load_inv():
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 
+# --- ORIGINAL, STABLE LOGIN ---
 user = st.sidebar.text_input("User Name:").strip().lower()
 st.sidebar.button("Unlock")
 
@@ -80,6 +98,7 @@ if inv.empty:
     st.error(msg)
     st.stop()
 
+# --- SIDEBAR INPUTS ---
 st.sidebar.header("Job Specs")
 cust = st.sidebar.text_input("Customer", value="Mantako")
 job = st.sidebar.text_input("Job Name", value="Free Press")
@@ -99,15 +118,4 @@ st.sidebar.header("Labor")
 cut = st.sidebar.number_input("Press Cut-Off", value=21.25)
 cp = apply_floor(st.sidebar.number_input("Pre-Press Plate Hours", value=0.5))
 r_hrs = apply_floor(st.sidebar.number_input("Press Run Hours", value=1.0))
-mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.5))
-p_ldrs = st.sidebar.number_input("Press Leaders", value=1)
-p_hlps = st.sidebar.number_input("Press Helpers", value=2)
-
-st.sidebar.subheader("Mailroom")
-ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=1)
-ml_lhrs = apply_floor(st.sidebar.number_input("Mailroom Leader Hours", value=0.0))
-ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=3)
-ml_hhrs = apply_floor(st.sidebar.number_input("Mailroom Helper Hours", value=0.0))
-
-if user == "boat hen": 
-    st.sidebar.markdown("<div
+mr = apply_floor(st.sidebar.number_input("Make-Ready Hours", value=0.5
