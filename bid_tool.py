@@ -139,6 +139,10 @@ def load_inv():
     n_col = find_col('net')
     w_col = find_col('width')
     g_col = find_col('grammage')
+    
+    pl_col = find_col('plant')
+    if not pl_col: 
+        pl_col = find_col('location')
 
     def ext(v):
         m = re.search(r'[\d\.]+', str(v))
@@ -150,6 +154,9 @@ def load_inv():
     df['Net'] = df[n_col].apply(ext) if n_col else None
     df['W_mm'] = df[w_col].apply(ext) if w_col else None
     df['G'] = df[g_col].apply(ext) if g_col else None
+    
+    df['Plant'] = df[pl_col].astype(str) if pl_col else "All"
+    df['Plant'] = df['Plant'].fillna("All")
 
     def get_final(row):
         if row['Net'] and row['Net'] > 0:
@@ -169,8 +176,8 @@ def load_inv():
     df['Width'] = (df['W_mm']/25.4).round(1)
     df['Weight'] = (df['G']*0.61386).round(1)
     
-    req_cols = ['Width','Weight','Price/lb']
-    return df.dropna(subset=req_cols), "Success"
+    req_cols = ['Width','Weight','Price/lb','Plant']
+    return df.dropna(subset=['Width','Weight','Price/lb'])[req_cols], "Success"
 
 st.set_page_config(page_title="Bid Tool", layout="wide")
 
@@ -192,6 +199,20 @@ if inv.empty:
     st.error(msg)
     st.stop()
 
+l_str = loc.lower()
+is_mad = "madelia" in l_str or "hop" in l_str
+
+def chk_p(x):
+    p_val = str(x).lower()
+    if is_mad:
+        return "madelia" in p_val or "hop" in p_val
+    return l_str in p_val or p_val in l_str
+
+mask = inv['Plant'].apply(chk_p)
+loc_inv = inv[mask]
+
+active_inv = inv if loc_inv.empty else loc_inv
+
 st.sidebar.header("Job Specs")
 cust = st.sidebar.text_input("Customer", value="Mantako")
 job = st.sidebar.text_input("Job Name", value="Free Press")
@@ -208,13 +229,13 @@ t_pgs = st.sidebar.number_input("Total Pages", value=20)
 c_pgs = st.sidebar.number_input("Color Pages", value=4)
 
 st.sidebar.header("Paper")
-w_list = sorted(inv['Width'].unique())
+w_list = sorted(active_inv['Width'].unique())
 sz = st.sidebar.selectbox("Web Width", w_list)
 
-wt_list = sorted(inv[inv['Width']==sz]['Weight'].unique())
+wt_list = sorted(active_inv[active_inv['Width']==sz]['Weight'].unique())
 wt = st.sidebar.selectbox("Basis Weight", wt_list)
 
-filt_inv = inv[(inv['Width']==sz) & (inv['Weight']==wt)]
+filt_inv = active_inv[(active_inv['Width']==sz) & (active_inv['Weight']==wt)]
 p_cost = filt_inv['Price/lb'].mean() * 1.10
 
 str_rate = "{:.3f}".format(p_cost)
