@@ -1,195 +1,390 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+import math
+import re
+import os
+import csv
+import datetime
 
-# ==========================================
-# 1. CORE ROBUST PARSING & UTILITIES
-# ==========================================
+def round_cents(val): 
+    return round(val + 1e-9, 2)
 
-def clean_string_key(val):
-    """
-    Normalizes strings to prevent lookups from failing due to minor
-    formatting discrepancies (e.g., quotes, spaces, trailing units).
-    """
-    if pd.isna(val):
-        return ""
-    s = str(val).lower().strip()
-    # Remove common characters that cause mismatch heartaches
-    for char in ['"', "'", '#', 'lb', 'pound', 'inch', 'ins', '-']:
-        s = s.replace(char, '')
-    return " ".join(s.split())
+def apply_floor(val): 
+    v = float(val)
+    if 0 < v < 1.0:
+        return 1.0
+    return v
 
-def load_and_normalize_inventory(uploaded_file):
-    """
-    Loads the inventory CSV and creates a normalized lookup key 
-    combining the facility, width, and weight to bypass strict string traps.
-    """
-    try:
-        df = pd.read_csv(uploaded_file)
-        
-        # Ensure critical columns exist, fallback to case-insensitive check
-        df.columns = [c.strip() for c in df.columns]
-        
-        # Creating a bulletproof lookup key
-        df['match_key'] = (
-            df['facility'].apply(clean_string_key) + "_" +
-            df['width'].apply(clean_string_key) + "_" +
-            df['weight'].apply(clean_string_key)
-        )
-        
-        # Clean up cost data types (strip currency symbols if any)
-        if 'cost' in df.columns:
-            if df['cost'].dtype == object:
-                df['cost'] = df['cost'].str.replace('$', '').str.replace(',', '').astype(float)
-        else:
-            df['cost'] = 0.0
-            
-        return df
-    except Exception as e:
-        st.error(f"Error parsing inventory CSV: {e}")
-        return pd.DataFrame()
-
-# ==========================================
-# 2. BIDDING LOGIC ENGINE
-# ==========================================
-
-def calculate_print_bid(facility, width, weight, quantity, running_hours, base_labor_rate, inventory_df):
-    """
-    Computes exact production costs enforcing safety floors and markups.
-    """
-    # 1. Look up unit cost safely
-    target_key = clean_string_key(facility) + "_" + clean_string_key(width) + "_" + clean_string_key(weight)
-    
-    match = inventory_df[inventory_df['match_key'] == target_key]
-    
-    if not match.empty:
-        # Pull the cost from the first valid match
-        unit_paper_cost = float(match.iloc[0]['cost'])
-        is_fallback = False
-    else:
-        # Safe fallback instead of failing silently or crashing
-        unit_paper_cost = 0.0
-        is_fallback = True
-
-    # 2. Apply explicit 10% paper handling markup
-    raw_paper_cost = unit_paper_cost * quantity
-    paper_markup_multiplier = 1.10
-    final_paper_cost = raw_paper_cost * paper_markup_multiplier
-    
-    # 3. Enforce dynamic labor hour floor (e.g., minimum 2 hours minimum setup)
-    MIN_LABOR_FLOOR = 2.0
-    billable_hours = max(float(running_hours), MIN_LABOR_FLOOR)
-    labor_cost = billable_hours * base_labor_rate
-    
-    # Hypothetical flat ink calculation based on volume/quantity for baseline
-    ink_cost_estimate = (quantity * 0.015) 
-    
-    total_job_cost = final_paper_cost + labor_cost + ink_cost_estimate
-    
-    return {
-        "unit_paper_cost": unit_paper_cost,
-        "final_paper_cost": final_paper_cost,
-        "billable_hours": billable_hours,
-        "labor_cost": labor_cost,
-        "ink_cost": ink_cost_estimate,
-        "total_cost": total_job_cost,
-        "is_fallback": is_fallback
+AUTH = {
+    "bob patchen": {
+        "role": "admin", 
+        "facs": ["Madelia (HOP)", "Minot", "Webster City"]
+    },
+    "mike christman": {
+        "role": "admin", 
+        "facs": ["Madelia (HOP)", "Minot", "Webster City"]
+    },
+    "boat hen": {
+        "role": "admin", 
+        "facs": ["Madelia (HOP)", "Minot", "Webster City"]
+    },
+    "brenda ahern": {
+        "role": "user", 
+        "facs": ["Madelia (HOP)", "Minot"]
+    },
+    "terry saar": {
+        "role": "user", 
+        "facs": ["Madelia (HOP)", "Minot"]
+    },
+    "grant gibbons": {
+        "role": "user", 
+        "facs": ["Webster City"]
     }
+}
 
-# ==========================================
-# 3. STREAMLIT UI & STATE MANAGEMENT
-# ==========================================
+LOCS = {
+    "Madelia (HOP)": {
+        "profit_margin": 0.25, 
+        "overhead_pct": 0.26, 
+        "newsprint_cost_per_lb": 0.35, 
+        "black_ink_cost_per_impression": 0.0006, 
+        "press_leader_rate": 30.0, 
+        "press_helper_rate": 25.0, 
+        "camera_plate_rate": 30.0, 
+        "make_ready_rate": 30.0, 
+        "plate_cost": 5.25, 
+        "plate_overhead_maint": 0.75, 
+        "color_ink_cost_per_plate_m": 0.95, 
+        "mailroom_leader_rate": 30.0, 
+        "mailroom_helper_rate": 25.0
+    },
+    "Minot": {
+        "profit_margin": 0.25, 
+        "overhead_pct": 0.26, 
+        "newsprint_cost_per_lb": 0.35, 
+        "black_ink_cost_per_impression": 0.0006, 
+        "press_leader_rate": 31.34, 
+        "press_helper_rate": 22.43, 
+        "camera_plate_rate": 30.0, 
+        "make_ready_rate": 31.34, 
+        "plate_cost": 5.25, 
+        "plate_overhead_maint": 0.75, 
+        "color_ink_cost_per_plate_m": 0.95, 
+        "mailroom_leader_rate": 24.11, 
+        "mailroom_helper_rate": 16.15
+    },
+    "Webster City": {
+        "profit_margin": 0.25, 
+        "overhead_pct": 0.26, 
+        "newsprint_cost_per_lb": 0.35, 
+        "black_ink_cost_per_impression": 0.0006, 
+        "press_leader_rate": 38.95, 
+        "press_helper_rate": 29.26, 
+        "camera_plate_rate": 21.45, 
+        "make_ready_rate": 38.95, 
+        "plate_cost": 5.25, 
+        "plate_overhead_maint": 0.75, 
+        "color_ink_cost_per_plate_m": 0.95, 
+        "mailroom_leader_rate": 36.63, 
+        "mailroom_helper_rate": 20.89
+    }
+}
 
-st.set_page_config(page_title="Print Production Bidding System", layout="wide")
-
-st.title("🖨️ Production Bid Estimator Engine")
-st.caption("Madelia | Minot | Webster City Core Hub")
-
-# Session state initialization for historical tracking
-if 'quote_history' not in st.session_state:
-    st.session_state.quote_history = []
-if 'inventory_data' not in st.session_state:
-    st.session_state.inventory_data = pd.DataFrame()
-
-# Sidebar: CSV Inventory Ingestion
-st.sidebar.header("Data Sync Options")
-uploaded_file = st.sidebar.file_uploader("Upload Master Stock CSV", type=["csv"])
-
-if uploaded_file is not None:
-    st.session_state.inventory_data = load_and_normalize_inventory(uploaded_file)
-    st.sidebar.success(f"Loaded {len(st.session_state.inventory_data)} stock rows successfully!")
-
-# Main Layout split into Input parameters and Live Costing Readout
-col1, col2 = st.columns([1, 1])
-
-with col1:
-    st.subheader("Job Specification Configuration")
+def load_inv():
+    all_f = os.listdir('.')
+    files = []
+    for f in all_f:
+        if 'inventory' in f.lower() and f.endswith('.csv'):
+            files.append(f)
+            
+    if not files: 
+        return pd.DataFrame(), "No inventory CSV found."
     
-    selected_facility = st.selectbox("Production Facility", ["Madelia", "Minot", "Webster City"])
-    
-    # Text fields instead of rigid drop-downs allows flexible typing without breaking
-    paper_width = st.text_input("Paper Roll Width (e.g., 34\")", value="34\"")
-    paper_weight = st.text_input("Paper Weight Basis (e.g., 45.4#)", value="45.4#")
-    
-    job_quantity = st.number_input("Total Roll Run/Quantity", min_value=1, value=10, step=1)
-    estimated_hours = st.number_input("Estimated Run Time (Hours)", min_value=0.0, value=1.5, step=0.5)
-    hourly_labor_rate = st.number_input("Standard Labor Rate ($/Hr)", min_value=0.0, value=45.0, step=2.50)
-    
-    calculate_trigger = st.button("Generate Bid Assessment", type="primary")
+    dfs = []
+    for target in files:
+        try:
+            with open(target, 'r', encoding='latin1', errors='replace') as f: 
+                data = list(csv.reader(f))
+            h_idx = -1
+            for i, r in enumerate(data):
+                if r and 'Ownership' in str(r[0]):
+                    h_idx = i
+                    break
+            if h_idx == -1: 
+                continue
+            
+            cols = [str(h).strip() for h in data[h_idx]]
+            df = pd.DataFrame(data[h_idx+1:], columns=cols)
+            dfs.append(df)
+        except: 
+            continue
 
-with col2:
-    st.subheader("Costing Breakout Engine")
+    if not dfs: 
+        return pd.DataFrame(), "Could not parse inventory."
     
-    if calculate_trigger:
-        if st.session_state.inventory_data.empty:
-            st.warning("⚠️ No active inventory sheet detected. Using $0.00 base rate defaults for paper mock calculations.")
+    df = pd.concat(dfs, ignore_index=True)
+    
+    def clean_col(c):
+        return re.sub(r'[^a-zA-Z0-9_]', '', c)
         
-        # Execute calculation mapping
-        results = calculate_print_bid(
-            facility=selected_facility,
-            width=paper_width,
-            weight=paper_weight,
-            quantity=job_quantity,
-            running_hours=estimated_hours,
-            base_labor_rate=hourly_labor_rate,
-            inventory_df=st.session_state.inventory_data
-        )
-        
-        # Display breakdown alerts for anomalies
-        if results['is_fallback']:
-            st.error(f"🔴 Spec Warning: No exact pricing found for {paper_width} width, {paper_weight} paper at {selected_facility}. Costs defaulting to 0.")
-        else:
-            st.success("🟢 Verified Lookup Match Found in Database Grid.")
+    df.columns = [clean_col(c) for c in df.columns]
 
-        # Metric Presentation Layout
-        m1, m2 = st.columns(2)
-        m1.metric("Base Unit Cost (per item/cwt)", f"${results['unit_paper_cost']:.4f}")
-        m2.metric("Total Billable Job Cost", f"${results['total_cost']:.2f}")
-        
-        st.markdown("---")
-        st.markdown("#### Itemized Ledger Details")
-        
-        # Summary Dataframe formatting
-        breakdown_table = pd.DataFrame({
-            "Cost Factor Category": ["Paper Supply Expense (Incl. 10% Handling)", "Operational Labor Cost Floor Applied", "Estimated Fluid Ink Spend", "Aggregated Estimate Gross"],
-            "Calculated Amount": [results['final_paper_cost'], results['labor_cost'], results['ink_cost'], results['total_cost']],
-            "Formula Elements Utilized": [f"Quantity {job_quantity} x Base Rate x 1.10", f"Hours Billed: {results['billable_hours']} hr Floor (Target: {estimated_hours} hr)", "Fixed volumetric standard projection markup", "Gross production margin target value"]
-        })
-        st.table(breakdown_table)
-        
-        # Retain history stamp
-        new_record = {
-            "Facility": selected_facility,
-            "Specs": f"{paper_width} / {paper_weight}",
-            "Billed Hours": results['billable_hours'],
-            "Total Valuation Quote": f"${results['total_cost']:.2f}"
+    def find_col(k):
+        for c in df.columns:
+            if k.lower() in c.lower():
+                return c
+        return None
+    
+    p_col = find_col('price')
+    n_col = find_col('net')
+    w_col = find_col('width')
+    g_col = find_col('grammage')
+    
+    pl_col = find_col('plant')
+    if not pl_col: 
+        pl_col = find_col('location')
+
+    # THE FIX: This aggressively strips out commas so $1,414.26 parses correctly.
+    def ext(v):
+        v_s = str(v)
+        v_c = re.sub(r'[^\d\.]', '', v_s)
+        if v_c:
+            try:
+                return float(v_c)
+            except:
+                return None
+        return None
+
+    df['P'] = df[p_col].apply(ext) if p_col else None
+    df['Net'] = df[n_col].apply(ext) if n_col else None
+    df['W_mm'] = df[w_col].apply(ext) if w_col else None
+    df['G'] = df[g_col].apply(ext) if g_col else None
+    
+    df['Plant'] = df[pl_col].astype(str) if pl_col else "All"
+    df['Plant'] = df['Plant'].fillna("All")
+
+    def get_final(row):
+        if row['Net'] and row['Net'] > 0:
+            return row['Net']
+        return row['P']
+
+    df['P_Fin'] = df.apply(get_final, axis=1)
+    df = df.dropna(subset=['P_Fin','W_mm','G'])
+
+    if df.empty: 
+        return df, "No valid prices."
+
+    def calc_lb(x):
+        return round(x + 1e-9, 2)
+
+    df['Price/lb'] = (df['P_Fin']/2204.62).apply(calc_lb)
+    df['Width'] = (df['W_mm']/25.4).round(1)
+    df['Weight'] = (df['G']*0.61386).round(1)
+    
+    req_cols = ['Width','Weight','Price/lb','Plant']
+    return df.dropna(subset=['Width','Weight','Price/lb'])[req_cols], "Success"
+
+st.set_page_config(page_title="Bid Tool", layout="wide")
+
+u_in = st.sidebar.text_input("User Name:")
+user = u_in.strip().lower()
+st.sidebar.button("Unlock")
+
+if not user or user not in AUTH: 
+    if user: 
+        st.sidebar.error("User not found.")
+    st.stop()
+
+user_data = AUTH[user]
+loc = st.sidebar.selectbox("Facility", user_data["facs"])
+rates = LOCS[loc]
+
+inv, msg = load_inv()
+if inv.empty: 
+    st.error(msg)
+    st.stop()
+
+l_str = loc.lower()
+is_mad = "madelia" in l_str or "hop" in l_str
+
+def chk_p(x):
+    p_val = str(x).lower()
+    if is_mad:
+        return "madelia" in p_val or "hop" in p_val
+    return l_str in p_val or p_val in l_str
+
+mask = inv['Plant'].apply(chk_p)
+loc_inv = inv[mask]
+
+active_inv = inv if loc_inv.empty else loc_inv
+
+st.sidebar.header("Job Specs")
+cust = st.sidebar.text_input("Customer", value="Mantako")
+job = st.sidebar.text_input("Job Name", value="Free Press")
+
+fmt_opts = ["Broadsheet", "Tabloid", "Book"]
+fmt = st.sidebar.selectbox("Format", fmt_opts)
+
+rtype_opts = ["Collect", "Straight"]
+rtype = st.sidebar.selectbox("Run Type", rtype_opts)
+
+run = st.sidebar.number_input("Press Run", value=5890, step=100)
+waste = st.sidebar.number_input("Waste Copies", value=589, step=50)
+t_pgs = st.sidebar.number_input("Total Pages", value=20)
+c_pgs = st.sidebar.number_input("Color Pages", value=4)
+
+st.sidebar.header("Paper")
+w_list = sorted(active_inv['Width'].unique())
+sz = st.sidebar.selectbox("Web Width", w_list)
+
+wt_list = sorted(active_inv[active_inv['Width']==sz]['Weight'].unique())
+wt = st.sidebar.selectbox("Basis Weight", wt_list)
+
+filt_inv = active_inv[(active_inv['Width']==sz) & (active_inv['Weight']==wt)]
+p_cost = filt_inv['Price/lb'].mean() * 1.10
+
+str_rate = "{:.3f}".format(p_cost)
+msg_inv = "Inventory Active: Billed at $" + str_rate + "/lb"
+st.sidebar.success(msg_inv)
+
+st.sidebar.header("Labor")
+cut = st.sidebar.number_input("Press Cut-Off", value=21.25)
+
+cp_in = st.sidebar.number_input("Pre-Press Plate Hours", value=0.5)
+cp = apply_floor(cp_in)
+
+r_in = st.sidebar.number_input("Press Run Hours", value=1.0)
+r_hrs = apply_floor(r_in)
+
+mr_in = st.sidebar.number_input("Make-Ready Hours", value=0.5)
+mr = apply_floor(mr_in)
+
+p_ldrs = st.sidebar.number_input("Press Leaders", value=1)
+p_hlps = st.sidebar.number_input("Press Helpers", value=2)
+
+st.sidebar.subheader("Mailroom")
+ml_ldr = st.sidebar.number_input("Mailroom Leaders", value=1)
+
+ml_l_in = st.sidebar.number_input("Mailroom Leader Hours", value=0.0)
+ml_lhrs = apply_floor(ml_l_in)
+
+ml_hlp = st.sidebar.number_input("Mailroom Helpers", value=3)
+
+ml_h_in = st.sidebar.number_input("Mailroom Helper Hours", value=0.0)
+ml_hhrs = apply_floor(ml_h_in)
+
+f_div = 2 if fmt=="Broadsheet" else (4 if fmt=="Tabloid" else 8)
+r_mult = 2 if rtype=="Straight" else 1
+
+bw_pl = math.ceil(t_pgs / f_div) * r_mult
+col_pl = math.ceil(c_pgs / f_div) * 3 * r_mult
+tot_pl = bw_pl + col_pl
+
+total_pgs = (run + waste) * t_pgs
+
+tot_lbs = 0
+if sz > 0 and cut > 0 and wt > 0:
+    y_factor = 1900000 / (sz * cut * wt)
+    tot_lbs = total_pgs / y_factor
+
+c_news = round_cents(tot_lbs * p_cost)
+ink_rate = rates["black_ink_cost_per_impression"]
+c_ink = round_cents(total_pgs * ink_rate)
+
+c_col_ink = 0.0
+if c_pgs > 0 and run > 0:
+    c_rate = rates["color_ink_cost_per_plate_m"]
+    c_col_ink = round_cents(col_pl * (run / 1000) * c_rate)
+
+lab_p_ldr = p_ldrs * rates["press_leader_rate"] * r_hrs
+lab_p_hlp = p_hlps * rates["press_helper_rate"] * r_hrs
+lab_mr = mr * rates["make_ready_rate"]
+
+pl_cost = tot_pl * rates["plate_cost"]
+pl_maint = tot_pl * rates["plate_overhead_maint"]
+
+lab_cam = cp * rates["camera_plate_rate"]
+
+lab_m_ldr = ml_ldr * ml_lhrs * rates["mailroom_leader_rate"]
+lab_m_hlp = ml_hlp * ml_hhrs * rates["mailroom_helper_rate"]
+
+c_sub_r = c_news + c_ink + c_col_ink + lab_p_ldr + lab_p_hlp
+c_sub_r += lab_mr + pl_cost + pl_maint + lab_cam
+c_sub_r += lab_m_ldr + lab_m_hlp
+
+c_sub = round_cents(c_sub_r)
+
+cost_mult = 1.0 + rates["overhead_pct"]
+t_cost = round_cents(c_sub * cost_mult)
+
+chg_mult = 1.0 + rates["profit_margin"]
+t_chg = round_cents(t_cost * chg_mult)
+
+head_txt = "Bid Summary: " + str(cust) + " - " + str(job)
+st.header(head_txt)
+
+lab_tot = c_sub - c_news - c_ink - c_col_ink - pl_cost - pl_maint
+ink_pl_tot = c_ink + c_col_ink + pl_cost + pl_maint + lab_cam
+
+c1, c2, c3 = st.columns(3)
+
+pap_str = "$" + "{:.2f}".format(c_news)
+c1.metric("Paper", pap_str)
+
+lab_str = "$" + "{:.2f}".format(lab_tot)
+c2.metric("Labor", lab_str)
+
+ink_str = "$" + "{:.2f}".format(ink_pl_tot)
+c3.metric("Ink/Plates", ink_str)
+
+st.divider()
+b1, b2 = st.columns(2)
+
+t_c_str = "$" + "{:.2f}".format(t_cost)
+b1.metric("Total Cost", t_c_str)
+
+t_ch_str = "$" + "{:.2f}".format(t_chg)
+b2.metric("Total Charge", t_ch_str)
+
+st.write("") 
+btn_save = st.button("Save Quote", type="primary")
+
+if btn_save:
+    if cust and job:
+        time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        new_q = {
+            "Date": time_str, 
+            "User": user.title(), 
+            "Customer": cust, 
+            "Job": job, 
+            "Facility": loc,
+            "Total Cost": t_c_str, 
+            "Total Charge": t_ch_str
         }
-        st.session_state.quote_history.append(new_record)
+        f_exists = os.path.exists("quotes.csv")
+        df_new = pd.DataFrame([new_q])
+        df_new.to_csv("quotes.csv", mode='a', header=not f_exists, index=False)
+        
+        s_msg1 = "Quote for " + str(cust) + " saved. "
+        s_msg2 = "Hit refresh to clear the board."
+        st.success(s_msg1 + s_msg2)
+    else:
+        st.error("Need a Customer and Job Name.")
 
-# Historical tracking ledger window at footer of app
-st.markdown("---")
-st.subheader("Historical Application Running Bids Ledger")
-if st.session_state.quote_history:
-    st.dataframe(pd.DataFrame(st.session_state.quote_history))
+st.divider()
+st.subheader("Saved Quotes")
+if os.path.exists("quotes.csv"):
+    try:
+        history = pd.read_csv("quotes.csv")
+        if user_data["role"] == "user":
+            is_user = history["User"].str.lower() == user.lower()
+            history = history[is_user]
+        
+        if not history.empty:
+            st.dataframe(history.iloc[::-1], use_container_width=True)
+        else:
+            st.info("Your filing cabinet is empty.")
+    except:
+        st.info("No quotes have been saved yet.")
 else:
-    st.info("No run logs captured in active session layout state memory yet.")
+    st.info("No quotes have been saved in the system yet.")
